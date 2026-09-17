@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-abyss: #05070a;
+  --color-deep: #0b1220;
+  --color-cyan: #00e5ff;
+  --color-violet: #7c5cfc;
+  --color-ink: #e6edf3;
+  --color-muted: #94a3b8;
+}
+
+body {
+  background-color: var(--color-abyss);
+  color: var(--color-ink);
+}
