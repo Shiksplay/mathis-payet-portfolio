@@ -7,8 +7,18 @@
  * `useFrame` lit directement, hors du cycle de rendu React.
  */
 
-/** Progression du scroll de la page, normalisee entre 0 et 1. */
-export const scrollSignal = { progress: 0 }
+export const scrollSignal = {
+  /** Progression du scroll de la page, normalisee entre 0 et 1. */
+  progress: 0,
+  /**
+   * Position continue le long du rail de camera, exprimee en index de
+   * keyframe : 0 = premiere section, 2.5 = a mi-chemin entre la 3e et la 4e.
+   * Calculee a partir des positions reelles des sections dans le document,
+   * pas d'une simple regle de trois sur le scroll — les sections n'ont pas
+   * toutes la meme hauteur.
+   */
+  track: 0,
+}
 
 /** Position du pointeur normalisee dans [-1, 1] sur les deux axes. */
 export const pointerSignal = { x: 0, y: 0 }
