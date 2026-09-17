@@ -35,6 +35,10 @@ const KEYFRAMES_BY_SECTION: Record<string, CameraKeyframe> = {
   // Travelling lateral oppose, plus bas : sensation de tourner autour du noyau.
   experience: { position: [-3.7, -0.6, 3.9], target: [0.2, 0, 0], fov: 50 },
 
+  // Galerie de projets : on s'ecarte et on plonge sous le noyau, qui remonte
+  // dans le cadre pour degager la bande horizontale de cartes.
+  projets: { position: [-1.4, -3.2, 5.2], target: [0, 0.6, 0], fov: 52 },
+
   // Vue de dessus : change radicalement la silhouette percue du graphe.
   formation: { position: [0.9, 4.0, 4.1], target: [0, 0, 0], fov: 48 },
 

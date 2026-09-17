@@ -31,6 +31,7 @@ function smoothstep(t: number): number {
  */
 export function ScrollCamera() {
   const camera = useThree((s) => s.camera)
+  const size = useThree((s) => s.size)
 
   // Vecteurs de travail alloues une fois : rien n'est alloue dans useFrame.
   const work = useMemo(
@@ -62,8 +63,18 @@ export function ScrollCamera() {
       a.position[1] + (b.position[1] - a.position[1]) * f,
       a.position[2] + (b.position[2] - a.position[2]) * f,
     )
+    // DECALAGE HORIZONTAL DEPENDANT DU FORMAT D'ECRAN.
+    // Les cadrages decalent la cible sur X pour pousser le noyau a cote du
+    // texte (le hero surtout, a -1.7). Sur un ecran large, ou le texte occupe
+    // une colonne a gauche, c'est exactement ce qu'il faut. Sur un telephone en
+    // portrait, le texte est pleine largeur : le meme decalage envoie le noyau
+    // hors cadre et laisse la moitie de l'ecran vide. On annule donc
+    // progressivement le decalage quand le format devient portrait.
+    const aspect = size.width / Math.max(1, size.height)
+    const shift = Math.min(1, Math.max(0, (aspect - 0.65) / 0.85))
+
     work.desiredTarget.set(
-      a.target[0] + (b.target[0] - a.target[0]) * f,
+      (a.target[0] + (b.target[0] - a.target[0]) * f) * shift,
       a.target[1] + (b.target[1] - a.target[1]) * f,
       a.target[2] + (b.target[2] - a.target[2]) * f,
     )

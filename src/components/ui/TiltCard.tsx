@@ -7,19 +7,25 @@ interface TiltCardProps {
   className?: string
   /** Amplitude d'inclinaison en degres. Reste volontairement faible. */
   maxTilt?: number
+  /** Verre plus epais (refraction plus marquee). */
+  thick?: boolean
 }
 
 /**
- * Carte avec inclinaison 3D legere suivant la souris.
+ * Carte en verre liquide, inclinable, avec reflet speculaire qui suit la souris.
  *
- * IMPLEMENTATION : la transformation est ecrite directement dans le style de
- * l'element (pas de state React), donc aucun re-render pendant le mouvement.
- * Un halo suit le curseur via deux variables CSS (--mx / --my).
+ * IMPLEMENTATION : la transformation et la position du reflet sont ecrites
+ * directement dans le style de l'element (pas de state React), donc aucun
+ * re-render pendant le mouvement.
  *
- * Desactivee si `prefers-reduced-motion` ou sur pointeur tactile — un tilt qui
- * se declenche au toucher est desagreable et peut gener la lecture.
+ * Le reflet est un ENFANT reel et non un pseudo-element : `.glass-panel::before`
+ * porte deja le reflet diagonal fixe du verre, et `::after` le liseré de survol.
+ * Les deux pseudo-elements sont pris.
+ *
+ * Inclinaison desactivee si `prefers-reduced-motion` ou sur pointeur tactile —
+ * un tilt qui se declenche au toucher est desagreable et gene la lecture.
  */
-export function TiltCard({ children, className, maxTilt = 4 }: TiltCardProps) {
+export function TiltCard({ children, className, maxTilt = 4, thick = false }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null)
   const reducedMotion = useAppStore((s) => s.reducedMotion)
 
@@ -34,8 +40,10 @@ export function TiltCard({ children, className, maxTilt = 4 }: TiltCardProps) {
       const py = (e.clientY - rect.top) / rect.height - 0.5
 
       el.style.transform = `perspective(1000px) rotateX(${(-py * maxTilt).toFixed(2)}deg) rotateY(${(px * maxTilt).toFixed(2)}deg) translateZ(0)`
+      // Position du reflet, consommee par la couche speculaire ci-dessous.
       el.style.setProperty('--mx', `${((px + 0.5) * 100).toFixed(1)}%`)
       el.style.setProperty('--my', `${((py + 0.5) * 100).toFixed(1)}%`)
+      el.style.setProperty('--glare', '1')
     },
     [maxTilt, reducedMotion],
   )
@@ -44,8 +52,7 @@ export function TiltCard({ children, className, maxTilt = 4 }: TiltCardProps) {
     const el = ref.current
     if (!el) return
     el.style.transform = ''
-    el.style.removeProperty('--mx')
-    el.style.removeProperty('--my')
+    el.style.setProperty('--glare', '0')
   }, [])
 
   return (
@@ -53,16 +60,19 @@ export function TiltCard({ children, className, maxTilt = 4 }: TiltCardProps) {
       ref={ref}
       onPointerMove={onPointerMove}
       onPointerLeave={reset}
-      className={cn(
-        'glass-panel group/tilt will-change-transform',
-        // Halo doux qui suit le curseur, uniquement quand --mx est defini.
-        'before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit]',
-        'before:bg-[radial-gradient(420px_circle_at_var(--mx,50%)_var(--my,0%),color-mix(in_oklab,var(--color-accent)_9%,transparent),transparent_70%)]',
-        'before:opacity-0 before:transition-opacity before:duration-500 hover:before:opacity-100',
-        className,
-      )}
+      className={cn('glass-panel will-change-transform', thick && 'glass-panel--thick', className)}
     >
-      {children}
+      {/* Reflet speculaire mobile : c'est le mouvement de cette tache lumineuse
+          qui donne la sensation de verre LIQUIDE, la refraction SVG etant
+          statique. Compose sur le GPU, aucun recalcul de filtre. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[radial-gradient(420px_circle_at_var(--mx,50%)_var(--my,0%),color-mix(in_oklab,var(--color-accent)_13%,transparent),transparent_68%)] opacity-[var(--glare,0)] transition-opacity duration-500"
+      />
+      {/* `flex flex-1 flex-col` : sans ca, une carte declaree `flex flex-col`
+          par son appelant verrait sa chaine flex coupee par ce conteneur, et
+          les `flex-1` / alignements en bas de ses enfants seraient ignores. */}
+      <div className="relative flex flex-1 flex-col">{children}</div>
     </div>
   )
 }

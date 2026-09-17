@@ -203,6 +203,69 @@ function buildEdges(
   return { linePositions, lineSeeds, edgeCount }
 }
 
+/**
+ * Attributs des "paquets" qui circulent sur les aretes.
+ *
+ * Chaque paquet est fige sur UNE arete : il n'a besoin que de ses deux
+ * extremites, d'un dephasage et d'une vitesse. Sa position est ensuite
+ * entierement calculee dans le vertex shader par interpolation entre les deux
+ * bouts — donc aucun tampon n'est remis a jour depuis le CPU.
+ */
+export interface PacketAttributes {
+  /** Extremite de depart, reutilisee comme attribut `position`. */
+  starts: Float32Array
+  /** Extremite d'arrivee. */
+  ends: Float32Array
+  /** Dephasage dans [0, 1) : les paquets ne partent pas tous ensemble. */
+  offsets: Float32Array
+  /** Vitesse, en trajets par seconde. */
+  speeds: Float32Array
+  count: number
+}
+
+/**
+ * Repartit `count` paquets sur les aretes du graphe.
+ *
+ * Les aretes sont tirees au sort (avec remise : plusieurs paquets peuvent
+ * partager une arete, ce qui est justement ce qu'on veut voir sur un lien
+ * charge). Le PRNG est graine pour que la composition soit reproductible.
+ */
+export function createPackets(
+  graph: NetworkGraph,
+  count: number,
+  seed = 90210,
+): PacketAttributes {
+  const rand = mulberry32(seed)
+  const starts = new Float32Array(count * 3)
+  const ends = new Float32Array(count * 3)
+  const offsets = new Float32Array(count)
+  const speeds = new Float32Array(count)
+
+  for (let i = 0; i < count; i += 1) {
+    const edge = Math.min(graph.edgeCount - 1, Math.floor(rand() * graph.edgeCount))
+    const base = edge * 6
+
+    // Une arete sur deux est parcourue a l'envers : le trafic circule dans les
+    // deux sens, comme sur un vrai lien.
+    const flip = rand() < 0.5
+    const aOff = flip ? 3 : 0
+    const bOff = flip ? 0 : 3
+
+    starts[i * 3] = graph.linePositions[base + aOff] ?? 0
+    starts[i * 3 + 1] = graph.linePositions[base + aOff + 1] ?? 0
+    starts[i * 3 + 2] = graph.linePositions[base + aOff + 2] ?? 0
+    ends[i * 3] = graph.linePositions[base + bOff] ?? 0
+    ends[i * 3 + 1] = graph.linePositions[base + bOff + 1] ?? 0
+    ends[i * 3 + 2] = graph.linePositions[base + bOff + 2] ?? 0
+
+    offsets[i] = rand()
+    // Plage de vitesses large : le trafic parait irregulier, pas metronomique.
+    speeds[i] = 0.12 + rand() * 0.38
+  }
+
+  return { starts, ends, offsets, speeds, count }
+}
+
 /** Genere le graphe complet. A appeler une fois, sous `useMemo`. */
 export function createNetworkGraph(
   overrides: Partial<NetworkGraphOptions> = {},

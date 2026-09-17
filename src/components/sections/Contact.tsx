@@ -52,7 +52,7 @@ export function Contact() {
   const { c, t } = useCv()
 
   return (
-    <SectionShell id="contact" index="07" title={t.headings.contact} kicker={t.contact.intro}>
+    <SectionShell id="contact" index="08" title={t.headings.contact} kicker={t.contact.intro}>
       <ul className="grid gap-4 sm:grid-cols-2">
         {/* E-mail */}
         <li className="glass-panel flex items-center gap-4 p-5">

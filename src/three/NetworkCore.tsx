@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { AdditiveBlending, Color, type Group, type ShaderMaterial } from 'three'
+import { DataPackets } from './DataPackets'
 import { createNetworkGraph } from './networkGraph'
 import { edgesFragmentShader, edgesVertexShader } from './shaders/edges'
 import { nodesFragmentShader, nodesVertexShader } from './shaders/nodes'
@@ -24,6 +25,8 @@ function setUniform(material: ShaderMaterial | null, name: string, value: number
 interface NetworkCoreProps {
   /** Densite du noyau. 420 en tier 'high', 140 en tier 'low'. */
   nodeCount: number
+  /** Nombre de paquets circulant sur les aretes. */
+  packetCount: number
   /** Opacite globale, abaissee sur mobile ou le noyau occupe plus d'ecran. */
   intensity?: number
 }
@@ -45,7 +48,7 @@ interface NetworkCoreProps {
  * Le revers est qu'il n'y a plus d'occlusion entre noeuds — sans importance
  * ici, puisqu'on cherche justement un rendu de "lumiere" et non de solide.
  */
-export function NetworkCore({ nodeCount, intensity = 1 }: NetworkCoreProps) {
+export function NetworkCore({ nodeCount, packetCount, intensity = 1 }: NetworkCoreProps) {
   const groupRef = useRef<Group>(null)
   const nodeMatRef = useRef<ShaderMaterial>(null)
   const edgeMatRef = useRef<ShaderMaterial>(null)
@@ -141,6 +144,11 @@ export function NetworkCore({ nodeCount, intensity = 1 }: NetworkCoreProps) {
           blending={AdditiveBlending}
         />
       </lineSegments>
+
+      {/* ---------- Trafic ----------
+          Place DANS le groupe : les paquets tournent avec le noyau, donc ils
+          restent solidaires des aretes qu'ils parcourent. */}
+      <DataPackets graph={graph} count={packetCount} intensity={intensity} />
     </group>
   )
 }

@@ -21,6 +21,8 @@ export interface UiStrings {
   headings: {
     profile: string
     experience: string
+    projects: string
+    projectsKicker: string
     education: string
     skills: string
     softSkills: string
@@ -70,6 +72,8 @@ export const ui: Record<Lang, UiStrings> = {
     headings: {
       profile: 'Profil',
       experience: 'Expérience & projets',
+      projects: 'Projets',
+      projectsKicker: 'Faites glisser pour parcourir',
       education: 'Formation',
       skills: 'Compétences',
       softSkills: 'Savoir-être',
@@ -123,6 +127,8 @@ export const ui: Record<Lang, UiStrings> = {
     headings: {
       profile: 'Profile',
       experience: 'Experience & projects',
+      projects: 'Projects',
+      projectsKicker: 'Drag to browse',
       education: 'Education',
       skills: 'Skills',
       softSkills: 'Soft skills',

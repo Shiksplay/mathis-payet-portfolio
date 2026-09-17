@@ -17,6 +17,7 @@ export const SECTIONS: readonly SectionDef[] = [
   { id: 'hero', label: { fr: 'Accueil', en: 'Home' }, inNav: false },
   { id: 'profil', label: { fr: 'Profil', en: 'Profile' }, inNav: true },
   { id: 'experience', label: { fr: 'Expérience', en: 'Experience' }, inNav: true },
+  { id: 'projets', label: { fr: 'Projets', en: 'Projects' }, inNav: true },
   { id: 'formation', label: { fr: 'Formation', en: 'Education' }, inNav: true },
   { id: 'competences', label: { fr: 'Compétences', en: 'Skills' }, inNav: true },
   { id: 'engagements', label: { fr: 'Engagements', en: 'Activities' }, inNav: true },

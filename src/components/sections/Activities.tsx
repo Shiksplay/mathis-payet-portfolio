@@ -8,7 +8,7 @@ export function Activities() {
   const { c, t } = useCv()
 
   return (
-    <SectionShell id="engagements" index="05" title={t.headings.activities}>
+    <SectionShell id="engagements" index="06" title={t.headings.activities}>
       <ul className="grid gap-5 sm:grid-cols-2">
         {c.activities.map((activity, index) => (
           <li key={activity.title}>

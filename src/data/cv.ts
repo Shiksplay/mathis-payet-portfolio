@@ -35,6 +35,21 @@ export interface LanguageSkill {
   level: string
 }
 
+/**
+ * Projet personnel ou academique.
+ *
+ * Contenu repris du portfolio existant (mathis-p-portfolio.lovable.app) :
+ * rien n'est invente ici non plus.
+ */
+export interface Project {
+  title: string
+  desc: string
+  /** Etiquettes courtes affichees sous la carte. */
+  tags: string[]
+  /** Numero de reference du projet dans la galerie ("01", "02"...). */
+  index: string
+}
+
 export interface CvContent {
   name: string
   title: string
@@ -43,7 +58,12 @@ export interface CvContent {
   email: string
   linkedin: string
   availability: string
+  /** Accroche courte du portfolio, affichee sous le nom dans le hero. */
+  tagline: string
+  /** Note de reorientation, reprise du portfolio existant. */
+  reorientation: string
   profile: string
+  projects: Project[]
   experiences: Experience[]
   education: Education[]
   /** Cle = nom de categorie (traduit), valeur = liste de competences. */
@@ -63,8 +83,30 @@ export const cv: Record<Lang, CvContent> = {
     email: 'mathis.payet@rt-iut.re',
     linkedin: 'https://linkedin.com/in/mathis-payet-a45379341',
     availability: 'Disponible pour une alternance — année scolaire 2026-2027',
+    tagline: 'Étudiant passionné par la programmation et le développement',
+    reorientation: 'En cours de réorientation vers le développement de jeux vidéo',
     profile:
       "Étudiant entrant en 3e année de BUT Réseaux et Télécommunications, parcours Cybersécurité, à l'IUT de La Réunion. Je recherche une alternance en administration et sécurité des réseaux pour l'année scolaire 2026-2027. Curieux et rigoureux, je souhaite mettre en pratique mes compétences en configuration, sécurisation et gestion d'infrastructures réseau au sein d'une équipe technique.",
+    projects: [
+      {
+        index: '01',
+        title: "Jeu intégré à un site web d'entreprise",
+        desc: "Mini-jeu ludique et professionnel intégré au site web d'une entreprise du bâtiment",
+        tags: ['Jeu vidéo', 'Web', 'Game design'],
+      },
+      {
+        index: '02',
+        title: 'The Forgotten',
+        desc: "Jeu solo d'horreur développé sur Unreal Engine 5 dans une ville abandonnée mystérieuse",
+        tags: ['Jeu vidéo', 'Unreal Engine', 'Horreur'],
+      },
+      {
+        index: '03',
+        title: 'SAÉ 1.02 — Système de mesure Température/Hygrométrie avec Raspberry Pi',
+        desc: "Système de supervision de la température et de l'humidité d'une salle serveur",
+        tags: ['IoT', 'Raspberry Pi', 'Capteurs'],
+      },
+    ],
     experiences: [
       {
         title: 'Assistance technique & projets informatiques',
@@ -112,9 +154,35 @@ export const cv: Record<Lang, CvContent> = {
         'ACL',
         'Windows Server',
       ],
-      Sécurité: ['Pare-feu', 'Pentesting', 'Wireshark', 'Nmap', 'Certificats SSL', 'VPN'],
-      'Infrastructure & Web': ['VMware', 'Proxy Squid', 'Apache', 'NGINX', 'MySQL', 'RDP'],
-      Programmation: ['Python', 'Développement Web'],
+      Sécurité: [
+        'Pare-feu',
+        'pfSense',
+        'Pentesting',
+        'Tests de sécurité',
+        'DMZ',
+        'Wireshark',
+        'Nmap',
+        'Certificats SSL',
+        'VPN',
+      ],
+      'Infrastructure & Web': [
+        'VMware',
+        'Docker',
+        'Linux',
+        'Proxy Squid',
+        'Apache',
+        'NGINX',
+        'MySQL',
+        'RDP',
+      ],
+      Programmation: [
+        'Python',
+        'C/C++',
+        'JavaScript/TypeScript',
+        'React',
+        'Node.js',
+        'Développement Web',
+      ],
       'Outils & certification': ['GLPI', 'Asterisk (ToIP)', 'MOOC ANSSI – SecNumAcadémie'],
     },
     softSkills: ["Travail d'équipe", 'Communication', 'Gestion de projet', 'Autonomie', 'Rigueur'],
@@ -141,8 +209,30 @@ export const cv: Record<Lang, CvContent> = {
     email: 'mathis.payet@rt-iut.re',
     linkedin: 'https://linkedin.com/in/mathis-payet-a45379341',
     availability: 'Available for a work-study program — 2026-2027 academic year',
+    tagline: 'Student passionate about programming and software development',
+    reorientation: 'Currently transitioning toward video game development',
     profile:
       'Third-year student in the Networks & Telecommunications program (BUT RT), Cybersecurity track, at IUT de La Réunion. Looking for a work-study position in network administration and security for the 2026-2027 academic year. Curious and rigorous, I want to put my configuration, hardening, and network infrastructure management skills into practice within a technical team.',
+    projects: [
+      {
+        index: '01',
+        title: 'Game embedded in a company website',
+        desc: 'A playful yet professional mini-game embedded in the website of a construction company',
+        tags: ['Game', 'Web', 'Game design'],
+      },
+      {
+        index: '02',
+        title: 'The Forgotten',
+        desc: 'Single-player horror game built in Unreal Engine 5, set in a mysterious abandoned city',
+        tags: ['Game', 'Unreal Engine', 'Horror'],
+      },
+      {
+        index: '03',
+        title: 'SAÉ 1.02 — Temperature/Humidity monitoring system with Raspberry Pi',
+        desc: 'Monitoring system for the temperature and humidity of a server room',
+        tags: ['IoT', 'Raspberry Pi', 'Sensors'],
+      },
+    ],
     experiences: [
       {
         title: 'IT Technical Support & Projects',
@@ -192,14 +282,33 @@ export const cv: Record<Lang, CvContent> = {
       ],
       Security: [
         'Firewalling',
+        'pfSense',
         'Penetration Testing',
+        'Security Testing',
+        'DMZ',
         'Wireshark',
         'Nmap',
         'SSL Certificates',
         'VPN',
       ],
-      'Infrastructure & Web': ['VMware', 'Squid Proxy', 'Apache', 'NGINX', 'MySQL', 'RDP'],
-      Programming: ['Python', 'Web Development'],
+      'Infrastructure & Web': [
+        'VMware',
+        'Docker',
+        'Linux',
+        'Squid Proxy',
+        'Apache',
+        'NGINX',
+        'MySQL',
+        'RDP',
+      ],
+      Programming: [
+        'Python',
+        'C/C++',
+        'JavaScript/TypeScript',
+        'React',
+        'Node.js',
+        'Web Development',
+      ],
       'Tools & Certifications': ['GLPI', 'Asterisk (VoIP)', 'ANSSI MOOC – SecNumAcadémie'],
     },
     softSkills: ['Teamwork', 'Communication', 'Project Management', 'Autonomy', 'Rigor'],

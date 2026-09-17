@@ -3,7 +3,6 @@ import { ActionButton } from '@/components/ui/ActionButton'
 import { Reveal } from '@/components/ui/Reveal'
 import { ScrambleHeading } from '@/components/ui/ScrambleHeading'
 import { useCv } from '@/hooks/useCv'
-import { firstSentence } from '@/lib/text'
 
 export function Hero() {
   const { c, t } = useCv()
@@ -51,9 +50,14 @@ export function Hero() {
           </p>
         </Reveal>
 
-        <Reveal delay={0.25}>
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
-            {firstSentence(c.profile)}
+        {/* Accroche du portfolio, seule phrase du hero.
+            La premiere phrase du profil y figurait aussi, mais les deux
+            commencaient par "Étudiant" : la repetition sautait aux yeux. Le
+            profil complet est de toute facon juste en dessous (section 01), et
+            un hero court porte mieux. */}
+        <Reveal delay={0.22}>
+          <p className="mt-8 max-w-2xl text-xl leading-snug text-ink/90 sm:text-2xl">
+            {c.tagline}
           </p>
         </Reveal>
 

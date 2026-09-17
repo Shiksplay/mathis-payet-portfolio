@@ -2,6 +2,8 @@ import { AdaptiveDpr } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { INITIAL_KEYFRAME } from '@/lib/cameraKeyframes'
 import { Effects } from './Effects'
+import { FlowParticles } from './FlowParticles'
+import { GradientField } from './GradientField'
 import { NetworkCore } from './NetworkCore'
 import { PointerParallax } from './PointerParallax'
 import { ScrollCamera } from './ScrollCamera'
@@ -68,10 +70,20 @@ export default function SceneCanvas({ tier }: SceneCanvasProps) {
 
       <ScrollCamera />
 
+      {/* Fond de degrade fluide : dessine en premier, en espace ecran, il
+          couvre toujours le viewport quelle que soit la camera. */}
+      <GradientField intensity={isHigh ? 1 : 0.85} />
+
       <PointerParallax enabled={isHigh}>
+        {/* Nuee en ecoulement autour du noyau : porte la sensation de fluide.
+            Coupee sur mobile — c'est l'effet le plus couteux en fill rate
+            pour le moins d'information apportee. */}
+        {isHigh ? <FlowParticles count={900} radius={4.4} /> : null}
+
         <NetworkCore
           // Mobile / low-end : densite divisee par trois.
           nodeCount={isHigh ? 420 : 140}
+          packetCount={isHigh ? 260 : 70}
           intensity={isHigh ? 1 : 0.85}
         />
       </PointerParallax>

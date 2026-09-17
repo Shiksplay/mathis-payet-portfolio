@@ -7,7 +7,7 @@ export function Skills() {
   const categories = Object.entries(c.skills)
 
   return (
-    <SectionShell id="competences" index="04" title={t.headings.skills}>
+    <SectionShell id="competences" index="05" title={t.headings.skills}>
       <div className="space-y-10">
         {categories.map(([category, items], groupIndex) => (
           <Reveal key={category} delay={groupIndex * 0.08}>

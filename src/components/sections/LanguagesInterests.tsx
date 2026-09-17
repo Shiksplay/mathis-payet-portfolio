@@ -12,7 +12,7 @@ export function LanguagesInterests() {
   const { c, t } = useCv()
 
   return (
-    <SectionShell id="langues" index="06" title={t.headings.languages}>
+    <SectionShell id="langues" index="07" title={t.headings.languages}>
       <Reveal>
         <div className="glass-panel grid gap-8 p-6 sm:grid-cols-2 sm:p-8">
         <div>

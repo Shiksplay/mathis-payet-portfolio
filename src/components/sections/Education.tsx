@@ -8,7 +8,7 @@ export function Education() {
   const { c, t } = useCv()
 
   return (
-    <SectionShell id="formation" index="03" title={t.headings.education}>
+    <SectionShell id="formation" index="04" title={t.headings.education}>
       <ol className="grid gap-5 sm:grid-cols-2">
         {c.education.map((step, index) => (
           <li key={step.title}>
