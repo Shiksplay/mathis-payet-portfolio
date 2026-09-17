@@ -1,15 +1,316 @@
 @import 'tailwindcss';
 
+/* ==========================================================================
+   DESIGN TOKENS — Tailwind v4 (CSS-first, pas de tailwind.config.js)
+   Chaque token declare ici genere automatiquement les utilitaires associes :
+   --color-accent  ->  text-accent / bg-accent / border-accent / bg-accent/10
+   --font-display  ->  font-display
+   --animate-x     ->  animate-x
+   ========================================================================== */
 @theme {
+  /* Typographie */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  /* Palette — fond quasi noir, un seul accent dominant a la fois */
   --color-abyss: #05070a;
   --color-deep: #0b1220;
-  --color-cyan: #00e5ff;
-  --color-violet: #7c5cfc;
   --color-ink: #e6edf3;
   --color-muted: #94a3b8;
+  --color-accent: #00e5ff; /* cyan electrique — accent principal */
+  --color-iris: #7c5cfc; /* violet — accent secondaire, degrades uniquement */
+  --color-hairline: #1b2534;
+
+  /* Rayons */
+  --radius-panel: 1.25rem;
+
+  /* Animations */
+  --animate-breathe: breathe 6s ease-in-out infinite;
+  --animate-caret: caret 1.05s steps(1) infinite;
+  --animate-drift: drift 18s linear infinite;
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes caret {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes drift {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 64px 64px;
+    }
+  }
 }
 
-body {
-  background-color: var(--color-abyss);
-  color: var(--color-ink);
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Les sections sont ancrees sous la nav fixe */
+    scroll-padding-top: 5.5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-abyss);
+    /* Degrade fixe : sert aussi de fallback visuel quand le canvas 3D est
+       absent (WebGL indisponible ou prefers-reduced-motion). */
+    background-image:
+      radial-gradient(
+        120% 90% at 50% -10%,
+        color-mix(in oklab, var(--color-deep) 100%, transparent) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        70% 60% at 85% 15%,
+        color-mix(in oklab, var(--color-iris) 12%, transparent) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        70% 60% at 10% 80%,
+        color-mix(in oklab, var(--color-accent) 8%, transparent) 0%,
+        transparent 70%
+      );
+    background-attachment: fixed;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Un seul style de focus, visible sur fond sombre, jamais supprime. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-accent) 30%, transparent);
+    color: #fff;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Barre de defilement discrete, accordee a la palette. */
+  @supports selector(::-webkit-scrollbar) {
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--color-abyss);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-hairline);
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: color-mix(in oklab, var(--color-accent) 45%, var(--color-hairline));
+    }
+  }
+
+  /* ACCESSIBILITE — respect de prefers-reduced-motion.
+     On neutralise ici toutes les transitions/animations CSS ; la 3D et les
+     animations JS (motion) sont desactivees separement via le store. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   COMPOSANTS
+   ========================================================================== */
+@layer components {
+  /* Panneau glassmorphism : fond flou translucide + liseré qui s'illumine au
+     survol. Le halo est porte par ::after pour ne pas couter un repaint du
+     backdrop-filter a chaque hover. */
+  .glass-panel {
+    position: relative;
+    border-radius: var(--radius-panel);
+    border: 1px solid color-mix(in oklab, var(--color-ink) 9%, transparent);
+    background: color-mix(in oklab, var(--color-deep) 52%, transparent);
+    backdrop-filter: blur(18px) saturate(135%);
+    transition:
+      border-color 0.45s ease,
+      transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .glass-panel::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--color-accent) 70%, transparent),
+      transparent 45%,
+      color-mix(in oklab, var(--color-iris) 55%, transparent)
+    );
+    /* Ne garde que le liseré : le centre du degrade est masque. */
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+
+  .glass-panel:hover::after,
+  .glass-panel:focus-within::after {
+    opacity: 1;
+  }
+
+  /* Etiquette monospace (dates, categories, meta) */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Lien de navigation : soulignement neon qui se deploie du centre */
+  .nav-link {
+    position: relative;
+    padding-block: 0.25rem;
+    color: var(--color-muted);
+    transition: color 0.3s ease;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--color-accent);
+    box-shadow: 0 0 8px var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .nav-link:hover,
+  .nav-link[data-active='true'] {
+    color: var(--color-ink);
+  }
+  .nav-link:hover::after,
+  .nav-link[data-active='true']::after {
+    transform: scaleX(1);
+  }
+
+  /* Noeud de competence : pastille qui s'illumine a l'apparition/au survol */
+  .skill-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 99px;
+    border: 1px solid var(--color-hairline);
+    background: color-mix(in oklab, var(--color-deep) 60%, transparent);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink);
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      color 0.3s ease;
+  }
+  .skill-node::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 99px;
+    background: var(--color-accent);
+    opacity: 0.5;
+    transition:
+      opacity 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .skill-node:hover {
+    border-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
+    box-shadow: 0 0 22px -6px color-mix(in oklab, var(--color-accent) 70%, transparent);
+  }
+  .skill-node:hover::before {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--color-accent);
+  }
+}
+
+/* ==========================================================================
+   UTILITAIRES SUR MESURE
+   ========================================================================== */
+
+/* Texte en degrade cyan -> violet, reserve aux titres forts. */
+@utility text-gradient {
+  background-image: linear-gradient(105deg, var(--color-ink) 0%, var(--color-accent) 55%, var(--color-iris) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Grille technique subtile, evoque un schema reseau. */
+@utility grid-blueprint {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-ink) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-ink) 4%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Halo diffus autour d'un element interactif. */
+@utility glow-accent {
+  box-shadow: 0 0 30px -10px color-mix(in oklab, var(--color-accent) 80%, transparent);
+}
+
+/* Reserve a l'accessibilite : visible uniquement pour les lecteurs d'ecran. */
+@utility sr-only-focusable {
+  &:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }

@@ -1,13 +1,108 @@
 <!doctype html>
-<html lang="en">
+<!-- L'attribut lang est mis a jour dynamiquement par le store (FR/EN). -->
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mathis-payet-portfolio</title>
+    <meta name="theme-color" content="#05070A" />
+    <meta name="color-scheme" content="dark" />
+
+    <title>Mathis Payet — Réseaux & Télécommunications, Cybersécurité</title>
+    <meta
+      name="description"
+      content="Étudiant en 3e année de BUT Réseaux et Télécommunications, parcours Cybersécurité, à l'IUT de La Réunion. À la recherche d'une alternance en administration et sécurité des réseaux pour l'année scolaire 2026-2027."
+    />
+    <meta name="author" content="Mathis Payet" />
+    <link rel="canonical" href="https://mathis-payet.vercel.app/" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="profile" />
+    <meta property="profile:first_name" content="Mathis" />
+    <meta property="profile:last_name" content="Payet" />
+    <meta property="og:site_name" content="Mathis Payet" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:url" content="https://mathis-payet.vercel.app/" />
+    <meta property="og:title" content="Mathis Payet — Réseaux & Télécommunications, Cybersécurité" />
+    <meta
+      property="og:description"
+      content="Étudiant en BUT Réseaux et Télécommunications, parcours Cybersécurité. Recherche une alternance en administration et sécurité des réseaux pour 2026-2027."
+    />
+    <meta property="og:image" content="https://mathis-payet.vercel.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Mathis Payet — Réseaux & Télécommunications, Cybersécurité" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mathis Payet — Réseaux & Télécommunications, Cybersécurité" />
+    <meta
+      name="twitter:description"
+      content="Étudiant en BUT Réseaux et Télécommunications, parcours Cybersécurité. Recherche une alternance en administration et sécurité des réseaux pour 2026-2027."
+    />
+    <meta name="twitter:image" content="https://mathis-payet.vercel.app/og.png" />
+
+    <!-- Polices : Space Grotesk (titres), Inter (corps), JetBrains Mono (labels/terminal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    <!-- Donnees structurees : ameliore la comprehension du profil par les moteurs. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Mathis Payet",
+        "jobTitle": "Étudiant en BUT Réseaux et Télécommunications — parcours Cybersécurité",
+        "email": "mailto:mathis.payet@rt-iut.re",
+        "telephone": "+262692463859",
+        "url": "https://mathis-payet.vercel.app/",
+        "sameAs": ["https://linkedin.com/in/mathis-payet-a45379341"],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Le Tampon",
+          "postalCode": "97430",
+          "addressRegion": "La Réunion",
+          "addressCountry": "FR"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "IUT de La Réunion — Saint-Pierre"
+        },
+        "knowsLanguage": ["fr", "en"],
+        "knowsAbout": [
+          "Administration réseau",
+          "Cybersécurité",
+          "VLAN",
+          "Active Directory",
+          "Pare-feu",
+          "VPN",
+          "Pentesting"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="padding: 2rem; font-family: system-ui; color: #e6edf3">
+        <h1>Mathis Payet — Réseaux &amp; Télécommunications, Cybersécurité</h1>
+        <p>
+          Ce site nécessite JavaScript. Vous pouvez consulter mon CV au format PDF :
+          <a href="/cv/CV_Mathis_Payet.pdf" style="color: #00e5ff">CV_Mathis_Payet.pdf</a>.
+        </p>
+        <p>
+          Contact : <a href="mailto:mathis.payet@rt-iut.re" style="color: #00e5ff">mathis.payet@rt-iut.re</a>
+          — 06 92 46 38 59
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
