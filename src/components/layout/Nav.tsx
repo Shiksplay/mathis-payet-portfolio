@@ -59,7 +59,21 @@ export function Nav() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-80">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 sm:px-8">
+      {/* VOILE DE LISIBILITE : la nav est fixe, donc le contenu defile dessous.
+          Sans fond, le texte des sections passait derriere les liens et les
+          rendait illisibles. Un voile floute + un degrade de sortie evitent la
+          collision sans enfermer la nav dans une barre opaque. */}
+      <div className="relative">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-abyss/70 backdrop-blur-lg"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-full h-12 bg-gradient-to-b from-abyss/70 to-transparent"
+        />
+
+        <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 sm:px-8">
         {/* Retour en haut de page */}
         <a
           href="#hero"
@@ -108,6 +122,7 @@ export function Nav() {
               <Menu className="size-4" aria-hidden="true" />
             )}
           </button>
+          </div>
         </div>
       </div>
 

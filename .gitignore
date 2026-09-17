@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Polices telechargees a la demande par `npm run og` (voir scripts/generate-og.mjs).
+# Le depot reste leger : l'image og.png est commitee, les polices non.
+scripts/.fonts

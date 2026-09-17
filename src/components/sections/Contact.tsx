@@ -115,8 +115,14 @@ export function Contact() {
       </ul>
 
       <Reveal delay={0.15}>
-        <p className="mt-8 font-mono text-[11px] tracking-[0.18em] text-muted/60 uppercase">
-          {c.availability}
+        {/* Pastille bordee plutot que du texte nu : a cet endroit de la page le
+            noyau est lumineux, et du texte a 60 % d'opacite par-dessus n'etait
+            pas lisible. */}
+        <p className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-accent/25 bg-abyss/60 px-4 py-2 backdrop-blur-sm">
+          <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+          <span className="font-mono text-[11px] tracking-[0.16em] text-accent/90 uppercase">
+            {c.availability}
+          </span>
         </p>
       </Reveal>
     </SectionShell>

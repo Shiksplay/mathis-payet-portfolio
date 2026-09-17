@@ -36,10 +36,9 @@ export function useTextScramble(text: string, enabled: boolean, msPerChar = 26):
   const [display, setDisplay] = useState(() => (enabled ? scramble(text, 0) : text))
 
   useEffect(() => {
-    if (!enabled) {
-      setDisplay(text)
-      return
-    }
+    // Rien a animer : le texte final est renvoye directement au retour du hook,
+    // sans passer par un setState (qui declencherait un rendu en cascade).
+    if (!enabled) return
 
     let raf = 0
     let frame = 0
@@ -63,5 +62,5 @@ export function useTextScramble(text: string, enabled: boolean, msPerChar = 26):
     return () => cancelAnimationFrame(raf)
   }, [text, enabled, msPerChar])
 
-  return display
+  return enabled ? display : text
 }

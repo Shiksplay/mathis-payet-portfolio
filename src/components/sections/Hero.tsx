@@ -10,7 +10,16 @@ export function Hero() {
 
   return (
     <section id="hero" className="relative flex min-h-svh items-center px-6 py-28 sm:px-8">
-      <div className="mx-auto w-full max-w-6xl">
+      {/* Voile de lisibilite : le noyau est certes decale a droite par le
+          cadrage de la camera, mais ses noeuds les plus externes atteignent
+          encore la zone de texte. Ce degrade garantit le contraste du H1 sans
+          masquer le noyau. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 left-0 w-full max-w-[56rem] bg-gradient-to-r from-abyss/95 via-abyss/75 to-transparent"
+      />
+
+      <div className="relative mx-auto w-full max-w-6xl">
         {/* Badge de disponibilite : l'information la plus importante pour un
             recruteur, donc la premiere lue. */}
         <Reveal y={12}>

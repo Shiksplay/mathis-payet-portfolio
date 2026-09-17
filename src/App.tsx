@@ -1,3 +1,4 @@
+import { domAnimation, LazyMotion } from 'motion/react'
 import { BootSequence } from '@/components/boot/BootSequence'
 import { CustomCursor } from '@/components/layout/CustomCursor'
 import { Footer } from '@/components/layout/Footer'
@@ -28,7 +29,11 @@ export default function App() {
   useScrollSpy()
 
   return (
-    <>
+    // `domAnimation` fournit uniquement les fonctionnalites necessaires
+    // (animations DOM + gestes de base), au lieu du moteur complet.
+    // `strict` fait echouer le build a l'usage d'un `motion.*` non allege :
+    // garde-fou contre une regression de taille de bundle.
+    <LazyMotion features={domAnimation} strict>
       {/* Arriere-plan : canvas 3D persistant (z-0) ou fallback statique. */}
       <Scene />
 
@@ -57,6 +62,6 @@ export default function App() {
 
       {/* Overlay de boot : au-dessus de tout, une seule fois par session. */}
       <BootSequence />
-    </>
+    </LazyMotion>
   )
 }

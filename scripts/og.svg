@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glowA" cx="0.78" cy="0.28" r="0.75">
+      <stop offset="0" stop-color="#7C5CFC" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#7C5CFC" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.1" cy="0.9" r="0.8">
+      <stop offset="0" stop-color="#00E5FF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#00E5FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="core" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#00E5FF" stop-opacity="0.28"/>
+      <stop offset="0.6" stop-color="#7C5CFC" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#7C5CFC" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="edge" x1="-250" y1="-250" x2="250" y2="250" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00E5FF" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#7C5CFC" stop-opacity="0.40"/>
+    </linearGradient>
+    <linearGradient id="mp" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00E5FF"/>
+      <stop offset="1" stop-color="#7C5CFC"/>
+    </linearGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00E5FF"/>
+      <stop offset="1" stop-color="#00E5FF" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Voile de contraste degrade : un rectangle opaque laisserait une
+         couture verticale nette au milieu de l'image. -->
+    <linearGradient id="veil" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#05070A" stop-opacity="0.94"/>
+      <stop offset="0.5" stop-color="#05070A" stop-opacity="0.9"/>
+      <stop offset="0.78" stop-color="#05070A" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#05070A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#05070A"/>
+  <rect width="1200" height="630" fill="url(#glowA)"/>
+  <rect width="1200" height="630" fill="url(#glowB)"/>
+
+  <!-- Noyau reseau -->
+  <g transform="translate(930 315)">
+    <circle r="300" fill="url(#core)"/>
+    <ellipse cx="0" cy="0" rx="250" ry="96" transform="rotate(0)" stroke="url(#edge)" stroke-width="1.4" fill="none"/><ellipse cx="0" cy="0" rx="250" ry="96" transform="rotate(60)" stroke="url(#edge)" stroke-width="1.4" fill="none"/><ellipse cx="0" cy="0" rx="250" ry="96" transform="rotate(120)" stroke="url(#edge)" stroke-width="1.4" fill="none"/>
+    <circle r="166" stroke="url(#edge)" stroke-width="1" stroke-opacity="0.45" fill="none"/>
+    <circle r="84" stroke="url(#edge)" stroke-width="1" stroke-opacity="0.3" fill="none"/>
+    <path d="M-250 0H250M0-250V250M-177-177L177 177M-177 177L177-177" stroke="url(#edge)" stroke-width="0.9" stroke-opacity="0.18"/>
+    <path d="M166.0 0.0L117.4 117.4M166.0 0.0L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/><path d="M117.4 117.4L0.0 166.0M117.4 117.4L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/><path d="M0.0 166.0L-117.4 117.4M0.0 166.0L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/><path d="M-117.4 117.4L-166.0 0.0M-117.4 117.4L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/><path d="M-166.0 0.0L-117.4 -117.4M-166.0 0.0L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/><path d="M-117.4 -117.4L-0.0 -166.0M-117.4 -117.4L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/><path d="M-0.0 -166.0L117.4 -117.4M-0.0 -166.0L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/><path d="M117.4 -117.4L166.0 -0.0M117.4 -117.4L0 0" stroke="#00E5FF" stroke-opacity="0.22" stroke-width="1"/>
+    <circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(0) translate(166 0)"/><circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(45) translate(166 0)"/><circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(90) translate(166 0)"/><circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(135) translate(166 0)"/><circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(180) translate(166 0)"/><circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(225) translate(166 0)"/><circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(270) translate(166 0)"/><circle r="4.5" fill="#00E5FF" fill-opacity="0.75" transform="rotate(315) translate(166 0)"/>
+    <circle r="3.4" fill="#7C5CFC" fill-opacity="0.65" transform="rotate(20) translate(250 0)"/><circle r="3.4" fill="#7C5CFC" fill-opacity="0.65" transform="rotate(75) translate(250 0)"/><circle r="3.4" fill="#7C5CFC" fill-opacity="0.65" transform="rotate(130) translate(250 0)"/><circle r="3.4" fill="#7C5CFC" fill-opacity="0.65" transform="rotate(200) translate(250 0)"/><circle r="3.4" fill="#7C5CFC" fill-opacity="0.65" transform="rotate(255) translate(250 0)"/><circle r="3.4" fill="#7C5CFC" fill-opacity="0.65" transform="rotate(310) translate(250 0)"/>
+    <circle r="8" fill="#00E5FF"/>
+  </g>
+
+  <!-- Voile qui garantit le contraste du texte par-dessus le motif -->
+  <rect width="860" height="630" fill="url(#veil)"/>
+
+  <!-- Monogramme -->
+  <g transform="translate(80 70) scale(0.85)" fill="none" stroke="url(#mp)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 45V20l9.5 13L32 20v25"/>
+    <path d="M41 45V20h7a8 8 0 0 1 0 16h-7"/>
+  </g>
+
+  <!-- Nom.
+       resvg ne selectionne pas les instances d'une police VARIABLE : il rend
+       l'axe wght a sa valeur par defaut et ignore font-weight. On epaissit
+       donc les glyphes avec un contour de la meme couleur (paint-order place
+       le contour sous le remplissage), ce qui reproduit fidelement le
+       semi-bold utilise sur le site. -->
+  <text x="80" y="326" font-family="Space Grotesk" font-size="92" fill="#E6EDF3"
+        stroke="#E6EDF3" stroke-width="2.6" paint-order="stroke" stroke-linejoin="round"
+        letter-spacing="-2">Mathis Payet</text>
+
+  <!-- Filet d'accent -->
+  <rect x="80" y="372" width="180" height="2" fill="url(#rule)"/>
+
+  <!-- Intitule -->
+  <text x="80" y="424" font-family="JetBrains Mono" font-size="19" font-weight="500" fill="#00E5FF" letter-spacing="1.6">RÉSEAUX &amp; TÉLÉCOMMUNICATIONS — CYBERSÉCURITÉ</text>
+
+  <!-- Disponibilite -->
+  <text x="80" y="470" font-family="JetBrains Mono" font-size="18" fill="#94A3B8" letter-spacing="0.4">Alternance 2026-2027 — administration &amp; sécurité des réseaux</text>
+
+  <!-- Contact -->
+  <text x="80" y="556" font-family="JetBrains Mono" font-size="17" fill="#94A3B8" fill-opacity="0.75" letter-spacing="0.4">mathis.payet@rt-iut.re</text>
+</svg>

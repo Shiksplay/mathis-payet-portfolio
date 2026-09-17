@@ -15,24 +15,11 @@ export default defineConfig({
     // three.js + l'ecosysteme R3F pesent lourd : on les isole dans leur propre
     // chunk pour qu'ils soient telecharges uniquement quand <SceneCanvas /> est
     // monte (import dynamique cote App), sans bloquer le LCP du contenu HTML.
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (
-              id.includes('three') ||
-              id.includes('@react-three') ||
-              id.includes('postprocessing') ||
-              id.includes('maath')
-            ) {
-              return 'three'
-            }
-            if (id.includes('motion')) return 'motion'
-          }
-          return null
-        },
-      },
-    },
+    // Pas de manualChunks : la frontiere d'import dynamique de <SceneCanvas />
+    // suffit a isoler three.js dans son propre chunk. Un manualChunks manuel
+    // creait au contraire une arete statique entre l'entree et le chunk three,
+    // ce qui poussait Vite a emettre un <link rel="modulepreload"> et annulait
+    // tout le benefice du chargement paresseux.
     // Le chunk three/R3F depasse naturellement 500 kB : on releve le seuil
     // d'avertissement pour garder une sortie de build lisible.
     chunkSizeWarningLimit: 1200,

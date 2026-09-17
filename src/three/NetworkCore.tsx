@@ -9,6 +9,18 @@ import { nodesFragmentShader, nodesVertexShader } from './shaders/nodes'
 const ACCENT = new Color('#00e5ff')
 const IRIS = new Color('#7c5cfc')
 
+/**
+ * Ecrit une valeur scalaire dans un uniform du materiau.
+ *
+ * `ShaderMaterial.uniforms` est indexe par chaine, donc typé comme
+ * potentiellement absent sous `noUncheckedIndexedAccess` : la garde evite un
+ * plantage si un uniform est renomme dans le shader sans l'etre ici.
+ */
+function setUniform(material: ShaderMaterial | null, name: string, value: number): void {
+  const uniform = material?.uniforms[name]
+  if (uniform) uniform.value = value
+}
+
 interface NetworkCoreProps {
   /** Densite du noyau. 420 en tier 'high', 140 en tier 'low'. */
   nodeCount: number
@@ -72,16 +84,15 @@ export function NetworkCore({ nodeCount, intensity = 1 }: NetworkCoreProps) {
   useFrame((state, delta) => {
     const t = state.clock.elapsedTime
 
-    // Un seul float envoye au GPU par materiau et par frame.
-    if (nodeMatRef.current) {
-      nodeUniforms.uTime.value = t
-      // AdaptiveDpr fait varier le DPR en cours de route : on resynchronise la
-      // taille des points pour qu'ils gardent la meme taille apparente.
-      nodeUniforms.uPixelRatio.value = state.gl.getPixelRatio()
-    }
-    if (edgeMatRef.current) {
-      edgeUniforms.uTime.value = t
-    }
+    // Les uniforms sont mutes A TRAVERS LE MATERIAU (et non via l'objet
+    // memoise) : c'est le canal normal entre le CPU et le GPU dans three.js, et
+    // cela evite de toucher une valeur que React considere comme figee.
+    // Un seul float part au GPU par materiau et par frame.
+    setUniform(nodeMatRef.current, 'uTime', t)
+    // AdaptiveDpr fait varier le DPR en cours de route : on resynchronise la
+    // taille des points pour qu'ils gardent la meme taille apparente.
+    setUniform(nodeMatRef.current, 'uPixelRatio', state.gl.getPixelRatio())
+    setUniform(edgeMatRef.current, 'uTime', t)
 
     // Rotation lente et continue. `delta` est utilise plutot que `elapsedTime`
     // pour rester independant du framerate.

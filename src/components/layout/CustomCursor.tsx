@@ -19,15 +19,17 @@ const INTERACTIVE = 'a, button, [role="button"], input, select, textarea, [data-
  */
 export function CustomCursor() {
   const reducedMotion = useAppStore((s) => s.reducedMotion)
-  const [enabled, setEnabled] = useState(false)
   const dotRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
   const hoveringRef = useRef(false)
 
-  useEffect(() => {
-    const fine = window.matchMedia('(pointer: fine)').matches
-    setEnabled(fine && !reducedMotion)
-  }, [reducedMotion])
+  // Le type de pointeur est lu une seule fois, a l'initialisation du state :
+  // pas d'effet, donc pas de rendu en cascade au montage. Un utilisateur ne
+  // passe pas d'une souris a un ecran tactile en cours de visite.
+  const [finePointer] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches,
+  )
+  const enabled = finePointer && !reducedMotion
 
   useEffect(() => {
     if (!enabled) return
@@ -38,10 +40,25 @@ export function CustomCursor() {
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
     const ring = { x: target.x, y: target.y }
     let raf = 0
+    // Tant que la souris n'a pas bouge, on ne connait pas sa position : afficher
+    // l'anneau au centre de l'ecran laisserait un cercle parasite au milieu de
+    // la page au chargement. On ne le revele qu'au premier mouvement.
+    let revealed = false
 
     const onMove = (e: PointerEvent) => {
       target.x = e.clientX
       target.y = e.clientY
+
+      if (!revealed) {
+        revealed = true
+        // L'anneau est place d'emblee sous le curseur : il ne traverse pas
+        // l'ecran depuis le centre a la premiere frame.
+        ring.x = e.clientX
+        ring.y = e.clientY
+        if (dotRef.current) dotRef.current.style.opacity = '1'
+        if (ringRef.current) ringRef.current.style.opacity = '1'
+      }
+
       // Le point est positionne immediatement : aucun retard de pointage.
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`
@@ -84,9 +101,14 @@ export function CustomCursor() {
       <div
         ref={ringRef}
         data-hover="false"
-        className="absolute top-0 left-0 size-8 rounded-full border border-accent/50 transition-[width,height,background-color,border-color] duration-250 data-[hover=true]:size-12 data-[hover=true]:border-accent data-[hover=true]:bg-accent/10"
+        style={{ opacity: 0 }}
+        className="absolute top-0 left-0 size-8 rounded-full border border-accent/50 transition-[width,height,background-color,border-color,opacity] duration-250 data-[hover=true]:size-12 data-[hover=true]:border-accent data-[hover=true]:bg-accent/10"
       />
-      <div ref={dotRef} className="absolute top-0 left-0 size-1 rounded-full bg-accent" />
+      <div
+        ref={dotRef}
+        style={{ opacity: 0 }}
+        className="absolute top-0 left-0 size-1 rounded-full bg-accent transition-opacity duration-250"
+      />
     </div>
   )
 }

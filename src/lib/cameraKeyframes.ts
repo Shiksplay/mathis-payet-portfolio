@@ -23,8 +23,11 @@ export interface CameraKeyframe {
  * Les valeurs sont volontairement lisibles plutot que calculees.
  */
 const KEYFRAMES_BY_SECTION: Record<string, CameraKeyframe> = {
-  // Plan large, noyau centre et un peu bas : laisse la place au titre H1.
-  hero: { position: [0, 0.25, 7.4], target: [0, -0.1, 0], fov: 42 },
+  // Plan large. La cible est decalee vers -x, ce qui pousse le noyau vers la
+  // DROITE de l'ecran : le titre H1 et l'accroche, alignes a gauche, ne sont
+  // plus traverses par les noeuds. C'est le seul cadrage ou le noyau est
+  // volontairement excentre, parce que c'est le seul ou le texte est enorme.
+  hero: { position: [0, 0.25, 7.4], target: [-1.7, -0.1, 0], fov: 42 },
 
   // On se rapproche en diagonale : le maillage commence a se lire.
   profil: { position: [2.9, 1.1, 4.6], target: [0, 0, 0], fov: 46 },
