@@ -60,8 +60,6 @@ export interface CvContent {
   availability: string
   /** Accroche courte du portfolio, affichee sous le nom dans le hero. */
   tagline: string
-  /** Note de reorientation, reprise du portfolio existant. */
-  reorientation: string
   profile: string
   projects: Project[]
   experiences: Experience[]
@@ -84,7 +82,6 @@ export const cv: Record<Lang, CvContent> = {
     linkedin: 'https://linkedin.com/in/mathis-payet-a45379341',
     availability: 'Disponible pour une alternance — année scolaire 2026-2027',
     tagline: 'Étudiant passionné par la programmation et le développement',
-    reorientation: 'En cours de réorientation vers le développement de jeux vidéo',
     profile:
       "Étudiant entrant en 3e année de BUT Réseaux et Télécommunications, parcours Cybersécurité, à l'IUT de La Réunion. Je recherche une alternance en administration et sécurité des réseaux pour l'année scolaire 2026-2027. Curieux et rigoureux, je souhaite mettre en pratique mes compétences en configuration, sécurisation et gestion d'infrastructures réseau au sein d'une équipe technique.",
     projects: [
@@ -210,7 +207,6 @@ export const cv: Record<Lang, CvContent> = {
     linkedin: 'https://linkedin.com/in/mathis-payet-a45379341',
     availability: 'Available for a work-study program — 2026-2027 academic year',
     tagline: 'Student passionate about programming and software development',
-    reorientation: 'Currently transitioning toward video game development',
     profile:
       'Third-year student in the Networks & Telecommunications program (BUT RT), Cybersecurity track, at IUT de La Réunion. Looking for a work-study position in network administration and security for the 2026-2027 academic year. Curious and rigorous, I want to put my configuration, hardening, and network infrastructure management skills into practice within a technical team.',
     projects: [

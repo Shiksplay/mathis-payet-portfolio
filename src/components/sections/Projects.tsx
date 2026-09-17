@@ -93,16 +93,6 @@ export function Projects() {
         </div>
       </Reveal>
 
-      {/* Note de reorientation : elle explique la presence de projets de jeu
-          video dans un portfolio de reseaux, donc elle appartient a cette
-          section plutot qu'au hero. */}
-      <Reveal delay={0.12}>
-        <p className="mt-10 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.16em] text-muted uppercase">
-          <span aria-hidden="true" className="h-px w-10 bg-accent/50" />
-          {c.reorientation}
-        </p>
-      </Reveal>
-
       <span className="sr-only lg:hidden">
         {lang === 'fr'
           ? 'Utilisez les flèches gauche et droite pour parcourir les projets.'
