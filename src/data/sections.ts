@@ -7,6 +7,18 @@ import type { Lang } from './cv'
  * correspondance avec les keyframes de camera (voir `lib/cameraKeyframes.ts`).
  * `inNav` permet d'exclure une section de la navigation sans la retirer du flux.
  */
+/** Sections de contenu (hors hero) : chacune correspond a une rubrique du PDF. */
+export type ContentSectionId =
+  | 'profil'
+  | 'experience'
+  | 'etude-de-cas'
+  | 'projets'
+  | 'formation'
+  | 'competences'
+  | 'engagements'
+  | 'langues'
+  | 'contact'
+
 export interface SectionDef {
   id: string
   label: Record<Lang, string>
@@ -17,6 +29,7 @@ export const SECTIONS: readonly SectionDef[] = [
   { id: 'hero', label: { fr: 'Accueil', en: 'Home' }, inNav: false },
   { id: 'profil', label: { fr: 'Profil', en: 'Profile' }, inNav: true },
   { id: 'experience', label: { fr: 'Expérience', en: 'Experience' }, inNav: true },
+  { id: 'etude-de-cas', label: { fr: 'Étude de cas', en: 'Case study' }, inNav: true },
   { id: 'projets', label: { fr: 'Projets', en: 'Projects' }, inNav: true },
   { id: 'formation', label: { fr: 'Formation', en: 'Education' }, inNav: true },
   { id: 'competences', label: { fr: 'Compétences', en: 'Skills' }, inNav: true },

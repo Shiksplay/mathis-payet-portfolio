@@ -1,7 +1,6 @@
 import { useInView } from 'motion/react'
 import * as m from 'motion/react-m'
-import { useMemo, useRef } from 'react'
-import { useTextScramble } from '@/hooks/useTextScramble'
+import { useRef } from 'react'
 import { cn } from '@/lib/cn'
 import { useAppStore } from '@/store/useAppStore'
 
@@ -19,31 +18,25 @@ interface DisplayHeadingProps {
  * ============================
  *
  * Traitement typographique inspire de landonorris.com : capitales, echelle
- * enorme, interlignage tres serre, et surtout une REVELATION PAR MASQUE — les
- * mots montent depuis le bas d'un conteneur en `overflow: hidden`, comme des
- * panneaux qui se soulevent, avec un decalage entre chaque mot.
+ * enorme, interlignage tres serre, et une REVELATION PAR MASQUE — les mots
+ * montent depuis le bas d'un conteneur en `overflow: hidden`, avec un leger
+ * decalage entre chaque mot. Le mouvement guide l'oeil vers le titre de la
+ * section qui arrive ; il reste court (0,45 s) pour ne pas retarder la lecture.
  *
- * Deux animations se superposent volontairement :
- *   1. le glissement vertical, qui donne le poids et le rythme ;
- *   2. l'effet "decrypt" du texte, qui rappelle l'identite cybersecurite.
+ * L'effet "decrypt" (brouillage) a ete retire des titres de section : repete
+ * sur chaque section, il ne signalait plus rien. Il reste sur le seul <h1>
+ * (le nom, voir `ScrambleHeading`), ou il porte l'identite cybersecurite.
  *
- * Le brouillage conserve la longueur ET les espaces de la chaine (voir
- * `useTextScramble`), donc les frontieres de mots restent stables pendant
- * toute l'animation : la mise en page ne bouge jamais.
- *
- * ACCESSIBILITE : le texte final est porte par `aria-label` sur le titre, et
- * tout le rendu decoupe est `aria-hidden`. Un lecteur d'ecran entend un titre
- * propre, jamais une suite de mots isoles ni des glyphes aleatoires.
+ * ACCESSIBILITE : le texte est porte par `aria-label` sur le titre, et le
+ * rendu decoupe en mots est `aria-hidden`. Un lecteur d'ecran entend un titre
+ * propre, jamais une suite de mots isoles.
  */
 export function DisplayHeading({ text, as = 'h2', id, className }: DisplayHeadingProps) {
   const ref = useRef<HTMLHeadingElement>(null)
   const reducedMotion = useAppStore((s) => s.reducedMotion)
   const inView = useInView(ref, { once: true, amount: 0.35 })
 
-  const display = useTextScramble(text, inView && !reducedMotion, 18)
-
-  // Le decoupage suit la chaine BROUILLEE, dont les espaces sont preserves.
-  const words = useMemo(() => display.split(' '), [display])
+  const words = text.split(' ')
 
   const Tag = as as 'h2'
 
@@ -62,8 +55,6 @@ export function DisplayHeading({ text, as = 'h2', id, className }: DisplayHeadin
         // Le masque : chaque mot vit dans une fenetre qui rogne son
         // debordement, ce qui permet de le faire monter "depuis dessous".
         <span
-          // Index comme cle : les mots changent de contenu a chaque frame
-          // pendant le brouillage, mais jamais de position.
           key={i}
           aria-hidden="true"
           className="mr-[0.22em] inline-block overflow-hidden pb-[0.06em] align-bottom"
@@ -76,9 +67,9 @@ export function DisplayHeading({ text, as = 'h2', id, className }: DisplayHeadin
               initial={{ y: '110%' }}
               animate={inView ? { y: '0%' } : { y: '110%' }}
               transition={{
-                duration: 0.85,
-                delay: i * 0.08,
-                ease: [0.16, 1, 0.3, 1],
+                duration: 0.45,
+                delay: i * 0.05,
+                ease: [0.2, 0.8, 0.2, 1],
               }}
             >
               {word}

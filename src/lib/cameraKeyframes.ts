@@ -35,6 +35,10 @@ const KEYFRAMES_BY_SECTION: Record<string, CameraKeyframe> = {
   // Travelling lateral oppose, plus bas : sensation de tourner autour du noyau.
   experience: { position: [-3.7, -0.6, 3.9], target: [0.2, 0, 0], fov: 50 },
 
+  // Etude de cas : on entre dans le maillage, au plus pres des liaisons —
+  // echo du schema reseau qui se construit au premier plan.
+  'etude-de-cas': { position: [1.7, 0.5, 2.5], target: [0, 0, 0], fov: 56 },
+
   // Galerie de projets : on s'ecarte et on plonge sous le noyau, qui remonte
   // dans le cadre pour degager la bande horizontale de cartes.
   projets: { position: [-1.4, -3.2, 5.2], target: [0, 0.6, 0], fov: 52 },

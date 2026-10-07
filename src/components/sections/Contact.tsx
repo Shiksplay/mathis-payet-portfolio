@@ -1,8 +1,9 @@
 // lucide-react v1 ne fournit plus d'icones de marque : on utilise une icone
 // generique (IdCard) pour LinkedIn, ce qui respecte aussi la contrainte
 // "pas de logos de marques tierces".
-import { ArrowUpRight, Check, Copy, IdCard, Mail, MapPin, Phone } from 'lucide-react'
+import { ArrowUpRight, Check, Copy, Download, IdCard, Mail, MapPin, Phone } from 'lucide-react'
 import { useCallback, useState } from 'react'
+import { ActionButton } from '@/components/ui/ActionButton'
 import { Reveal } from '@/components/ui/Reveal'
 import { SectionShell } from '@/components/ui/SectionShell'
 import { useCv } from '@/hooks/useCv'
@@ -52,7 +53,7 @@ export function Contact() {
   const { c, t } = useCv()
 
   return (
-    <SectionShell id="contact" index="08" title={t.headings.contact} kicker={t.contact.intro}>
+    <SectionShell id="contact" index="09" title={t.headings.contact} kicker={t.contact.intro}>
       <ul className="grid gap-4 sm:grid-cols-2">
         {/* E-mail */}
         <li className="glass-panel flex items-center gap-4 p-5">
@@ -115,15 +116,27 @@ export function Contact() {
       </ul>
 
       <Reveal delay={0.15}>
-        {/* Pastille bordee plutot que du texte nu : a cet endroit de la page le
-            noyau est lumineux, et du texte a 60 % d'opacite par-dessus n'etait
-            pas lisible. */}
-        <p className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-accent/25 bg-abyss/60 px-4 py-2 backdrop-blur-sm">
-          <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
-          <span className="font-mono text-[11px] tracking-[0.16em] text-accent/90 uppercase">
-            {c.availability}
-          </span>
-        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          {/* Pastille bordee plutot que du texte nu : a cet endroit de la page le
+              noyau est lumineux, et du texte a 60 % d'opacite par-dessus n'etait
+              pas lisible. */}
+          <p className="inline-flex items-center gap-2.5 rounded-full border border-accent/25 bg-abyss/60 px-4 py-2 backdrop-blur-sm">
+            <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+            <span className="font-mono text-[11px] tracking-[0.16em] text-accent/90 uppercase">
+              {c.availability}
+            </span>
+          </p>
+          {/* Rappel du CV en fin de parcours : le recruteur qui arrive ici n'a
+              pas a remonter jusqu'au hero. */}
+          <ActionButton
+            href="/cv/CV_Mathis_Payet.pdf"
+            download="CV_Mathis_Payet.pdf"
+            icon={Download}
+            className="bg-abyss/60 backdrop-blur-sm"
+          >
+            {t.hero.downloadCv}
+          </ActionButton>
+        </div>
       </Reveal>
     </SectionShell>
   )

@@ -23,10 +23,10 @@ import { useCv } from '@/hooks/useCv'
  * Le contenu vient du portfolio existant (mathis-p-portfolio.lovable.app).
  */
 export function Projects() {
-  const { c, t, lang } = useCv()
+  const { c, t } = useCv()
 
   return (
-    <SectionShell id="projets" index="03" title={t.headings.projects} wide>
+    <SectionShell id="projets" index="04" title={t.headings.projects} wide>
       {/* Affordance de glissement : affichee uniquement quand la bande defile
           reellement, donc masquee a partir de lg ou elle devient une grille. */}
       <p className="label-mono mb-6 flex items-center gap-3 lg:hidden">
@@ -53,7 +53,7 @@ export function Projects() {
               key={project.title}
               className="flex w-[min(85vw,30rem)] shrink-0 snap-start lg:w-auto"
             >
-              <TiltCard thick maxTilt={5} className="group/card flex w-full flex-col p-7 sm:p-9">
+              <TiltCard thick maxTilt={3} className="group/card flex w-full flex-col p-7 sm:p-9">
                 {/* Numero de projet en filigrane : ancre visuelle a grande
                     echelle, typique du traitement editorial. */}
                 <div className="flex items-start justify-between gap-6">
@@ -93,11 +93,7 @@ export function Projects() {
         </div>
       </Reveal>
 
-      <span className="sr-only lg:hidden">
-        {lang === 'fr'
-          ? 'Utilisez les flèches gauche et droite pour parcourir les projets.'
-          : 'Use the left and right arrow keys to browse the projects.'}
-      </span>
+      <span className="sr-only lg:hidden">{t.headings.projectsKeyboardHint}</span>
     </SectionShell>
   )
 }

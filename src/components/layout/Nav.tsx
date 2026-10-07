@@ -1,4 +1,4 @@
-import { Menu, X } from 'lucide-react'
+import { Download, Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SECTIONS } from '@/data/sections'
 import { useCv } from '@/hooks/useCv'
@@ -87,9 +87,11 @@ export function Nav() {
         </a>
 
         <div className="flex items-center gap-2">
-          {/* Navigation desktop */}
-          <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
-            <ul className="hidden items-center gap-7 text-sm md:flex">
+          {/* Navigation desktop, a partir de xl : avec huit sections, le
+              bouton CV et le choix de langue, les liens ne tiennent pas en
+              dessous de ~1 100 px (ils passaient sur deux lignes a 768). */}
+          <nav aria-label={t.nav.label}>
+            <ul className="hidden items-center gap-7 text-sm xl:flex">
               {NAV_SECTIONS.map((section) => (
                 <li key={section.id}>
                   <a
@@ -105,7 +107,19 @@ export function Nav() {
             </ul>
           </nav>
 
-          <LangToggle className="ml-2" />
+          {/* Telechargement du CV, visible en permanence (desktop ET mobile) :
+              c'est le document que le recruteur vient chercher. */}
+          <a
+            href="/cv/CV_Mathis_Payet.pdf"
+            download="CV_Mathis_Payet.pdf"
+            aria-label={t.hero.downloadCv}
+            className="ml-2 inline-flex h-9 items-center gap-2 rounded-full border border-accent/40 px-3.5 font-mono text-[11px] tracking-[0.14em] text-accent uppercase transition-colors hover:bg-accent/10"
+          >
+            <Download className="size-3.5" aria-hidden="true" />
+            <span aria-hidden="true">{t.cvBridge.downloadShort}</span>
+          </a>
+
+          <LangToggle className="ml-1" />
 
           {/* Bouton menu mobile */}
           <button
@@ -114,7 +128,7 @@ export function Nav() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t.nav.closeMenu : t.nav.menu}
-            className="flex size-9 items-center justify-center rounded-full border border-hairline text-ink transition-colors hover:border-accent/50 hover:text-accent md:hidden"
+            className="flex size-9 items-center justify-center rounded-full border border-hairline text-ink transition-colors hover:border-accent/50 hover:text-accent xl:hidden"
           >
             {open ? (
               <X className="size-4" aria-hidden="true" />
@@ -128,10 +142,10 @@ export function Nav() {
 
       {/* Panneau mobile — retire du DOM quand ferme, pour ne pas piéger le focus. */}
       {open ? (
-        <div ref={panelRef} className="px-6 pb-4 md:hidden">
+        <div ref={panelRef} className="px-6 pb-4 xl:hidden">
           <nav
             id="mobile-nav"
-            aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}
+            aria-label={t.nav.label}
             className="glass-panel overflow-hidden p-2"
           >
             <ul className="flex flex-col">

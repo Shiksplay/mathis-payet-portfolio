@@ -66,6 +66,7 @@ src/
 ├─ hooks/            # useCv, useTrackers, useScrollSpy, useTextScramble, …
 ├─ lib/
 │  ├─ signals.ts       # scroll/pointeur hors React (aucun re-render par frame)
+│  ├─ proofs.ts        # index compétence -> expériences qui la prouvent
 │  └─ cameraKeyframes.ts # un cadrage de caméra par section
 ├─ three/
 │  ├─ SceneCanvas.tsx  # racine du canvas (chargée en lazy)
@@ -77,7 +78,7 @@ src/
 │  └─ shaders/
 └─ components/
    ├─ boot/           # séquence de boot façon terminal
-   ├─ layout/         # nav, curseur, barre de progression, fallbacks
+   ├─ layout/         # nav, barre de progression, fallbacks
    ├─ sections/       # les 8 sections du CV
    └─ ui/             # SectionShell, TiltCard, Reveal, ScrambleHeading, …
 ```
@@ -94,6 +95,53 @@ Les libellés d'interface (boutons, titres de sections, lignes du terminal)
 sont dans `src/data/ui.ts`.
 
 Aucun texte n'est écrit en dur dans les composants : tout passe par `useCv()`.
+
+### Le site complète le CV, il ne le recopie pas
+
+Le recruteur a souvent le PDF sous les yeux. Trois mécanismes relient les deux :
+
+- **Compétences → preuves.** Chaque compétence a un identifiant stable
+  (`SKILL_IDS` / `SkillId` dans `cv.ts`). Une expérience ou un projet déclare
+  ce qu'il a mis en œuvre dans `uses: SkillId[]`. Dans la section Compétences,
+  une compétence ainsi prouvée devient un bouton qui indique où elle a été
+  pratiquée, avec un lien vers la carte (qui s'éclaire à l'arrivée, via
+  `:target`). **Règle : on n'ajoute un `uses` que si le texte du CV, ou
+  Mathis, l'atteste.** Une compétence sans preuve reste une simple étiquette.
+- **Rubrique du PDF.** Le bandeau de chaque section indique la rubrique du CV
+  qu'elle prolonge (`ui.cvBridge.rubrics`).
+- **« Ce que le CV ne dit pas ».** `cv.beyondCv[section]`, optionnel : une
+  phrase de Mathis affichée sous le titre. Rien n'est rendu tant qu'elle est
+  vide.
+
+Le CV reste téléchargeable depuis le hero, la nav (desktop et mobile) et la
+section Contact.
+
+### L'étude de cas (section `etude-de-cas`)
+
+`cv.caseStudy` décrit une expérience étape par étape ; chaque étape déclare
+les éléments du schéma (`nodes`) qu'elle fait apparaître. Le schéma SVG
+(`components/case-study/CaseStudyDiagram.tsx`) est épinglé (`sticky`) pendant
+que les étapes défilent ; un `IntersectionObserver` dont la bande de détection
+est la « ligne de lecture » choisit l'étape active (centre de l'écran en deux
+colonnes, centre de la zone visible sous le schéma en une colonne). Pas de
+GSAP. En reduced-motion : pas de sticky, schéma complet, étapes toutes lisibles.
+
+Le contenu vient du compte rendu de la SAE et des réponses de Mathis :
+topologie simplifiée (siège, DMZ, LAN serveurs, tunnel IPsec, succursale),
+étapes réalisées personnellement marquées `mine` (badge « Mon rôle »), bilan
+chiffré et enseignements (`outcome`). Ce qui n'a pas été finalisé (tunnel
+IPsec, pare-feu de bordure, proxy) est dit comme tel et dessiné en couleur
+secondaire, jamais en accent. **Aucune donnée interne** : ni adressage, ni
+identifiant, ni nom de domaine du labo, ni nom de co-équipier.
+
+`Experience.schematic` (optionnel) affiche un petit schéma linéaire dans une
+carte d'expérience (`components/case-study/SchematicDiagram.tsx`) : utilisé
+pour la ToIP du stage, simplifié et sans information interne.
+
+Insérer une section dans la page implique : une entrée dans `SECTIONS`
+(`data/sections.ts`), dans `ContentSectionId`, dans `ui.cvBridge.rubrics`
+(FR/EN), un cadrage dans `lib/cameraKeyframes.ts`, et la renumérotation des
+`index` des sections suivantes.
 
 ### Les cadrages de la caméra
 
@@ -206,8 +254,17 @@ commande a besoin du réseau à son premier lancement.
 ### Choix de performance
 
 - Le canvas est chargé en `React.lazy` : three.js part dans un chunk séparé
-  (≈ 264 kB gzip), après le premier rendu HTML. Charge initiale : **≈ 102 kB
-  gzip** de JS. Le LCP n'attend jamais la 3D.
+  (≈ 268 kB gzip), après le premier rendu HTML. Charge initiale : **≈ 105 kB
+  gzip** de JS (mesuré le 7 oct. 2026). Le LCP n'attend jamais la 3D.
+- **Polices non bloquantes.** La feuille Google Fonts est chargée en
+  `media="print"` puis activée (`onload`) : elle bloquait le premier rendu
+  ≈ 1,4 s sur mobile. Pour que la bascule police système → police web ne
+  décale pas la page, chaque police a un repli calibré (`@font-face … Fallback`
+  avec `size-adjust` / `ascent-override` dans `index.css`). Lighthouse mobile :
+  Performance ≈ 47 → ≈ 78, FCP 4,0 → 2,2 s, CLS ≤ 0,01. Si une police change,
+  recalculer ces métriques.
+- Le hero n'a pas d'animation d'entrée (hors brouillage du nom) : son accroche
+  est l'élément LCP, et un `Reveal` la laissait à opacité nulle jusqu'à 0,9 s.
 - **Pas de `manualChunks` dans `vite.config.ts`, et c'est volontaire.** Un
   `manualChunks` qui regroupait three/R3F créait une arête statique entre le
   chunk d'entrée et le chunk three : Vite émettait alors un
@@ -235,6 +292,12 @@ commande a besoin du réseau à son premier lancement.
 
 - `prefers-reduced-motion` : 3D remplacée par le fallback statique, séquence de
   boot ignorée, effet « decrypt » désactivé, transitions CSS neutralisées.
+  La préférence est lue **dès la création du store** (`useAppStore`), pas dans
+  un effet : sinon le premier rendu voyait `false` et le chunk three partait
+  avant d'être annulé.
+- La séquence de boot ne bloque rien : une petite console `aria-hidden`, sans
+  focus ni écoute clavier, qui tape deux lignes en CSS et s'efface en 850 ms.
+  Le contenu est lisible et utilisable dès le premier rendu.
 - L'effet de brouillage des titres est `aria-hidden` ; le texte final est exposé
   via `aria-label` — un lecteur d'écran n'entend jamais les glyphes aléatoires.
 - Le canvas est `aria-hidden` et `pointer-events: none` : purement décoratif, il
@@ -243,9 +306,8 @@ commande a besoin du réseau à son premier lancement.
   chaque `<section>`.
 - Lien d'évitement, focus visible partout, navigation clavier complète, menu
   mobile fermable à Échap.
-- Le curseur personnalisé ne remplace le curseur système que sur pointeur fin et
-  hors reduced-motion. Il est composé d'un point qui suit la souris **au pixel
-  près** et d'un anneau amorti : la précision de pointage est préservée.
+- Le curseur système n'est jamais remplacé (l'ancien curseur personnalisé a été
+  retiré : il ne guidait rien et tournait en boucle d'animation permanente).
 
 ### Mesurer Lighthouse
 

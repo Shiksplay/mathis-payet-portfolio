@@ -62,6 +62,17 @@ function detectBootDone(): boolean {
   }
 }
 
+/**
+ * Valeur initiale lue des la creation du store, et non dans un effet : sinon le
+ * premier rendu voit `false`, `useDeviceTierSync` calcule un tier 'high'/'low'
+ * avec cette valeur perimee, et le `React.lazy` de la scene part telecharger
+ * three.js avant que la preference reelle ne soit appliquee.
+ */
+function detectReducedMotion(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
 function persistLang(lang: Lang): void {
   try {
     window.localStorage.setItem(LANG_KEY, lang)
@@ -100,7 +111,7 @@ export const useAppStore = create<AppState>()((set, get) => ({
     if (get().activeSection !== id) set({ activeSection: id })
   },
 
-  reducedMotion: false,
+  reducedMotion: detectReducedMotion(),
   setReducedMotion: (value) => set({ reducedMotion: value }),
 
   tier: 'none',

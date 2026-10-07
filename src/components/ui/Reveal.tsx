@@ -22,7 +22,7 @@ interface RevealProps {
  * animation ni opacite initiale (jamais de contenu invisible pour cause
  * d'animation desactivee).
  */
-export function Reveal({ children, delay = 0, y = 24, className }: RevealProps) {
+export function Reveal({ children, delay = 0, y = 12, className }: RevealProps) {
   const reducedMotion = useAppStore((s) => s.reducedMotion)
 
   if (reducedMotion) {
@@ -35,7 +35,9 @@ export function Reveal({ children, delay = 0, y = 24, className }: RevealProps) 
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.7, delay, ease: [0.2, 0.8, 0.2, 1] }}
+      // Court : le contenu doit etre lisible presque aussitot qu'il entre a
+      // l'ecran. Le mouvement signale l'arrivee, il ne la met pas en scene.
+      transition={{ duration: 0.4, delay, ease: [0.2, 0.8, 0.2, 1] }}
     >
       {children}
     </m.div>

@@ -8,10 +8,11 @@
    --animate-x     ->  animate-x
    ========================================================================== */
 @theme {
-  /* Typographie */
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+  /* Typographie — chaque police web est suivie de son repli "calibre"
+     (voir les @font-face plus bas). */
+  --font-display: 'Space Grotesk', 'Space Grotesk Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, 'Cascadia Code', monospace;
 
   /* Palette — fond quasi noir, un seul accent dominant a la fois */
   --color-abyss: #05070a;
@@ -29,18 +30,6 @@
   --animate-breathe: breathe 6s ease-in-out infinite;
   --animate-caret: caret 1.05s steps(1) infinite;
   --animate-drift: drift 18s linear infinite;
-  --animate-marquee: marquee 38s linear infinite;
-
-  @keyframes marquee {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    /* -50 % : la piste contient deux copies de la liste, donc a mi-course elle
-       se retrouve exactement dans son etat de depart. Boucle invisible. */
-    to {
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
 
   @keyframes breathe {
     0%,
@@ -69,6 +58,40 @@
       background-position: 64px 64px;
     }
   }
+}
+
+/* ==========================================================================
+   POLICES DE REPLI CALIBREES
+   Les polices web se chargent sans bloquer le rendu (voir index.html) : le
+   texte s'affiche d'abord dans une police systeme, puis bascule. Pour que la
+   bascule ne deplace pas la mise en page (CLS), la police systeme est
+   redimensionnee aux metriques de la police web. Valeurs mesurees dans
+   Chromium (largeur moyenne + fontBoundingBox, canvas.measureText) le
+   7 oct. 2026 ; celles d'Inter concordent avec les valeurs publiees.
+   ========================================================================== */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 106.9%;
+  ascent-override: 90.74%;
+  descent-override: 22.45%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  src: local('Arial');
+  size-adjust: 102.82%;
+  ascent-override: 95.31%;
+  descent-override: 28.2%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New');
+  size-adjust: 99.98%;
+  ascent-override: 102.02%;
+  descent-override: 30%;
+  line-gap-override: 0%;
 }
 
 /* ==========================================================================
@@ -270,6 +293,173 @@
     opacity: 1;
   }
 
+  /* Console de boot (BootSequence) : frappe caractere par caractere en
+     `steps()`, puis fondu du conteneur. Tout est en CSS, zero JS par frame. */
+  .boot-line {
+    clip-path: inset(0 100% 0 0);
+    animation: boot-type var(--type-ms) steps(var(--chars), end) var(--delay) forwards;
+  }
+  .boot-console {
+    animation: boot-out 250ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--out-delay) forwards;
+  }
+  @keyframes boot-type {
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes boot-out {
+    to {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     ETUDE DE CAS (CaseStudy / CaseStudyDiagram)
+     Seules `opacity` et `transform` sont animees. Les etats viennent de
+     `data-state` (pending / done / active / static) sur chaque <g>.
+     ------------------------------------------------------------------------ */
+  .cs-node {
+    transition: opacity 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .cs-node[data-state='pending'] {
+    opacity: 0.12;
+  }
+  .cs-node[data-state='done'] {
+    opacity: 0.6;
+  }
+  .cs-node[data-state='active'],
+  .cs-node[data-state='static'] {
+    opacity: 1;
+  }
+  .cs-stroke {
+    fill: none;
+    stroke: color-mix(in oklab, var(--color-muted) 70%, transparent);
+    stroke-width: 1.25;
+  }
+  .cs-fill {
+    fill: color-mix(in oklab, var(--color-deep) 80%, transparent);
+  }
+  /* Tailles en unites du viewBox (440 de large) : x0,7 a 375 px d'ecran,
+     x1,4 environ sur desktop. Le texte des etapes porte l'information ; les
+     libelles du schema ne servent qu'a reperer les elements. */
+  .cs-label {
+    fill: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.01em;
+  }
+  .cs-label--sm {
+    font-size: 11px;
+  }
+  /* Libelles dans les boites (40 a 72 unites de large). */
+  .cs-label--xs {
+    font-size: 8.5px;
+  }
+  .cs-label--strong {
+    fill: var(--color-ink);
+  }
+  /* Ce qui n'a pas ete finalise (tunnel IPsec) : couleur secondaire, jamais
+     l'accent, pour ne pas le presenter comme un acquis. */
+  .cs-label--warn {
+    fill: var(--color-iris);
+  }
+  .cs-warn-stroke {
+    fill: none;
+    stroke: color-mix(in oklab, var(--color-iris) 75%, transparent);
+    stroke-width: 1.25;
+  }
+  /* Calque d'accent : ne s'allume que sur l'etape active. */
+  .cs-hl {
+    opacity: 0;
+    transition: opacity 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .cs-hl-stroke {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+  }
+  .cs-hl-fill {
+    fill: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+  .cs-node[data-state='active'] .cs-hl {
+    opacity: 1;
+  }
+  /* Paquet dans le tunnel IPsec : il part du siege et s'efface a mi-chemin,
+     trois fois — le tunnel n'a pas ete finalise, le paquet n'arrive pas. */
+  .cs-packet {
+    fill: var(--color-iris);
+    opacity: 0;
+  }
+  .cs-node[data-state='active'] .cs-packet {
+    animation: cs-packet 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 3;
+  }
+  @keyframes cs-packet {
+    0% {
+      opacity: 0;
+      transform: translateX(0);
+    }
+    15% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(48px);
+    }
+  }
+  /* Schema lineaire (SchematicDiagram) : apparition en cascade au premier
+     passage, une seule fois. */
+  .sch-node {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  [data-inview='true'] .sch-node {
+    animation: sch-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes sch-in {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sch-node {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Etapes : celle au centre de l'ecran est pleinement lisible, les autres
+     sont attenuees pour guider l'oeil. */
+  .cs-step {
+    opacity: 0.4;
+    transition: opacity 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .cs-step[data-active='true'] {
+    opacity: 1;
+  }
+  .cs-step-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+    justify-content: center;
+    border-radius: 99px;
+    border: 1px solid var(--color-hairline);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .cs-step-btn:hover,
+  .cs-step-btn[data-active='true'] {
+    border-color: color-mix(in oklab, var(--color-accent) 60%, transparent);
+    color: var(--color-ink);
+  }
+
   /* Etiquette monospace (dates, categories, meta) */
   .label-mono {
     font-family: var(--font-mono);
@@ -335,13 +525,65 @@
       opacity 0.3s ease,
       box-shadow 0.3s ease;
   }
-  .skill-node:hover {
+  /* Competence prouvee par une experience : pastille pleine et lumineuse, et
+     un vrai bouton (le survol et l'etat actif ouvrent le panneau de preuves).
+     Une competence sans preuve garde la pastille attenuee, sans etat de
+     survol : rien ne suggere une interaction qui n'existe pas. */
+  .skill-node[data-proven='true'] {
+    cursor: pointer;
+    border-color: color-mix(in oklab, var(--color-accent) 32%, transparent);
+  }
+  .skill-node[data-proven='true']::before {
+    opacity: 1;
+    box-shadow: 0 0 6px var(--color-accent);
+  }
+  .skill-node[data-proven='true']:hover,
+  .skill-node[data-active='true'] {
     border-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
     box-shadow: 0 0 22px -6px color-mix(in oklab, var(--color-accent) 70%, transparent);
   }
-  .skill-node:hover::before {
-    opacity: 1;
+  .skill-node[data-proven='true']:hover::before,
+  .skill-node[data-active='true']::before {
     box-shadow: 0 0 10px var(--color-accent);
+  }
+
+  /* Entree du panneau de preuves (Skills). Neutralisee en reduced-motion par
+     la regle globale : le panneau apparait alors directement. */
+  .proof-in {
+    animation: proof-in 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes proof-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
+  /* Pastille seule, pour la legende de la section Competences. */
+  .skill-dot {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 99px;
+    background: var(--color-accent);
+    box-shadow: 0 0 6px var(--color-accent);
+  }
+
+  /* Arrivee sur une experience depuis un lien "preuve" (#xp-...) : le liseré
+     du panneau s'allume puis s'eteint, pour montrer ou regarder. Opacite
+     seule ; neutralise par la regle reduced-motion globale. */
+  .xp-target:target .glass-panel::after {
+    animation: target-glow 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1;
+  }
+  @keyframes target-glow {
+    0%,
+    55% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 }
 

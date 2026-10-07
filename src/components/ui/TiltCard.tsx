@@ -5,7 +5,11 @@ import { useAppStore } from '@/store/useAppStore'
 interface TiltCardProps {
   children: ReactNode
   className?: string
-  /** Amplitude d'inclinaison en degres. Reste volontairement faible. */
+  /**
+   * Amplitude d'inclinaison en degres. Reste volontairement faible ; `0`
+   * desactive l'inclinaison et ne garde que le reflet (cartes riches en texte,
+   * ou un mouvement du support generait la lecture).
+   */
   maxTilt?: number
   /** Verre plus epais (refraction plus marquee). */
   thick?: boolean
@@ -39,7 +43,9 @@ export function TiltCard({ children, className, maxTilt = 4, thick = false }: Ti
       const px = (e.clientX - rect.left) / rect.width - 0.5
       const py = (e.clientY - rect.top) / rect.height - 0.5
 
-      el.style.transform = `perspective(1000px) rotateX(${(-py * maxTilt).toFixed(2)}deg) rotateY(${(px * maxTilt).toFixed(2)}deg) translateZ(0)`
+      if (maxTilt > 0) {
+        el.style.transform = `perspective(1000px) rotateX(${(-py * maxTilt).toFixed(2)}deg) rotateY(${(px * maxTilt).toFixed(2)}deg) translateZ(0)`
+      }
       // Position du reflet, consommee par la couche speculaire ci-dessous.
       el.style.setProperty('--mx', `${((px + 0.5) * 100).toFixed(1)}%`)
       el.style.setProperty('--my', `${((py + 0.5) * 100).toFixed(1)}%`)
@@ -60,7 +66,12 @@ export function TiltCard({ children, className, maxTilt = 4, thick = false }: Ti
       ref={ref}
       onPointerMove={onPointerMove}
       onPointerLeave={reset}
-      className={cn('glass-panel will-change-transform', thick && 'glass-panel--thick', className)}
+      className={cn(
+        'glass-panel',
+        maxTilt > 0 && 'will-change-transform',
+        thick && 'glass-panel--thick',
+        className,
+      )}
     >
       {/* Reflet speculaire mobile : c'est le mouvement de cette tache lumineuse
           qui donne la sensation de verre LIQUIDE, la refraction SVG etant
