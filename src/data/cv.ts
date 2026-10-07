@@ -30,6 +30,7 @@ export const SKILL_IDS = [
   'windows-server',
   'firewall',
   'pfsense',
+  'stormshield',
   'pentest',
   'security-testing',
   'dmz',
@@ -38,6 +39,7 @@ export const SKILL_IDS = [
   'ssl',
   'vpn',
   'vmware',
+  'virtualbox',
   'docker',
   'linux',
   'squid',
@@ -286,14 +288,15 @@ export const cv: Record<Lang, CvContent> = {
         type: 'Projet académique',
         period: 'Déc. 2025 – Mars 2026',
         bullets: [
-          "Conception et déploiement d'un réseau virtuel pour une entreprise multisite avec VPN (VMware)",
+          "Conception et déploiement d'un réseau virtuel pour une entreprise multisite avec VPN (VirtualBox)",
           'Configuration des services réseau : adressage IP/DHCP, serveurs internes, interconnexion des équipements, proxy Squid, certificats SSL, RDP, Active Directory',
-          "Sécurisation du réseau : pare-feu, ACL, tests d'intrusion (pentesting)",
+          'Sécurisation du réseau : pare-feux Stormshield et ACL',
         ],
         // Puces du CV + compte rendu de la SAE (AD/DNS, DMZ, GPO, serveurs
-        // Debian et Windows Server).
+        // Debian et Windows Server, Stormshield, VirtualBox). Le pentest
+        // releve d'une autre SAE, a ajouter plus tard : pas de lien ici.
         uses: [
-          'vmware',
+          'virtualbox',
           'vpn',
           'dhcp',
           'dns',
@@ -307,8 +310,8 @@ export const cv: Record<Lang, CvContent> = {
           'apache',
           'dmz',
           'firewall',
+          'stormshield',
           'acl',
-          'pentest',
         ],
       },
     ],
@@ -319,7 +322,7 @@ export const cv: Record<Lang, CvContent> = {
       experienceId: 'infra-multisite',
       title: 'Infrastructure multisite',
       intro:
-        "SAÉ de BUT RT2, en équipe de trois : l'infrastructure complète d'une banque fictive répartie sur deux sites, entièrement virtualisée. Mon rôle : l'Active Directory, le DNS et les serveurs de la DMZ.",
+        "SAÉ de BUT RT2, en équipe de trois : l'infrastructure complète d'une banque fictive répartie sur deux sites, entièrement virtualisée sous VirtualBox. Mon rôle : l'Active Directory, le DNS et les serveurs de la DMZ.",
       caption:
         'Topologie simplifiée du projet. Adressage, identifiants et noms internes volontairement omis.',
       labels: {
@@ -410,6 +413,7 @@ export const cv: Record<Lang, CvContent> = {
       Sécurité: [
         { id: 'firewall', label: 'Pare-feu' },
         { id: 'pfsense', label: 'pfSense' },
+        { id: 'stormshield', label: 'Stormshield' },
         { id: 'pentest', label: 'Pentesting' },
         { id: 'security-testing', label: 'Tests de sécurité' },
         { id: 'dmz', label: 'DMZ' },
@@ -420,6 +424,7 @@ export const cv: Record<Lang, CvContent> = {
       ],
       'Infrastructure & Web': [
         { id: 'vmware', label: 'VMware' },
+        { id: 'virtualbox', label: 'VirtualBox' },
         { id: 'docker', label: 'Docker' },
         { id: 'linux', label: 'Linux' },
         { id: 'squid', label: 'Proxy Squid' },
@@ -514,14 +519,15 @@ export const cv: Record<Lang, CvContent> = {
         type: 'Academic project',
         period: 'Dec. 2025 – Mar. 2026',
         bullets: [
-          'Designed and deployed a virtualized network for a multi-site company, including VPN connectivity (VMware)',
+          'Designed and deployed a virtualized network for a multi-site company, including VPN connectivity (VirtualBox)',
           'Configured core network services: IP addressing/DHCP, internal servers, device interconnection, Squid proxy, SSL certificates, RDP, Active Directory',
-          'Hardened the network: firewalling, ACLs, penetration testing',
+          'Hardened the network: Stormshield firewalls and ACLs',
         ],
         // Puces du CV + compte rendu de la SAE (AD/DNS, DMZ, GPO, serveurs
-        // Debian et Windows Server).
+        // Debian et Windows Server, Stormshield, VirtualBox). Le pentest
+        // releve d'une autre SAE, a ajouter plus tard : pas de lien ici.
         uses: [
-          'vmware',
+          'virtualbox',
           'vpn',
           'dhcp',
           'dns',
@@ -535,8 +541,8 @@ export const cv: Record<Lang, CvContent> = {
           'apache',
           'dmz',
           'firewall',
+          'stormshield',
           'acl',
-          'pentest',
         ],
       },
     ],
@@ -544,7 +550,7 @@ export const cv: Record<Lang, CvContent> = {
       experienceId: 'infra-multisite',
       title: 'Multi-site infrastructure',
       intro:
-        'BUT RT2 team project (three people): the full infrastructure of a fictional bank spread across two sites, entirely virtualized. My part: Active Directory, DNS and the DMZ servers.',
+        'BUT RT2 team project (three people): the full infrastructure of a fictional bank spread across two sites, entirely virtualized in VirtualBox. My part: Active Directory, DNS and the DMZ servers.',
       caption:
         'Simplified project topology. Addressing, credentials and internal names deliberately left out.',
       labels: {
@@ -635,6 +641,7 @@ export const cv: Record<Lang, CvContent> = {
       Security: [
         { id: 'firewall', label: 'Firewalling' },
         { id: 'pfsense', label: 'pfSense' },
+        { id: 'stormshield', label: 'Stormshield' },
         { id: 'pentest', label: 'Penetration Testing' },
         { id: 'security-testing', label: 'Security Testing' },
         { id: 'dmz', label: 'DMZ' },
@@ -645,6 +652,7 @@ export const cv: Record<Lang, CvContent> = {
       ],
       'Infrastructure & Web': [
         { id: 'vmware', label: 'VMware' },
+        { id: 'virtualbox', label: 'VirtualBox' },
         { id: 'docker', label: 'Docker' },
         { id: 'linux', label: 'Linux' },
         { id: 'squid', label: 'Squid Proxy' },
