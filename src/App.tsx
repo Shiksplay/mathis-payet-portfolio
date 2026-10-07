@@ -91,7 +91,7 @@ export default function App() {
         <Footer />
       </div>
 
-      {/* Overlay de boot : au-dessus de tout, une seule fois par session. */}
+      {/* Console de boot : < 1 s, non bloquante, une seule fois par session. */}
       <BootSequence />
     </LazyMotion>
   )

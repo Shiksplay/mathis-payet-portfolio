@@ -40,9 +40,9 @@ export interface UiStrings {
     copy: string
     copied: string
   }
+  /** Deux lignes courtes : la console de boot doit tenir sous la seconde. */
   boot: {
     lines: string[]
-    skip: string
   }
   loader: string
   footer: {
@@ -92,14 +92,7 @@ export const ui: Record<Lang, UiStrings> = {
       copied: 'Copié',
     },
     boot: {
-      lines: [
-        '> Initializing secure connection...',
-        '> Handshake TLS 1.3 — OK',
-        '> Authenticating: Mathis Payet',
-        '> Loading profile: BUT RT — Cybersécurité',
-        '> Access granted',
-      ],
-      skip: 'Cliquez ou appuyez sur une touche pour passer',
+      lines: ['> Handshake TLS 1.3 — OK', '> Access granted'],
     },
     loader: 'Construction du réseau',
     footer: {
@@ -147,14 +140,7 @@ export const ui: Record<Lang, UiStrings> = {
       copied: 'Copied',
     },
     boot: {
-      lines: [
-        '> Initializing secure connection...',
-        '> TLS 1.3 handshake — OK',
-        '> Authenticating: Mathis Payet',
-        '> Loading profile: BUT RT — Cybersecurity',
-        '> Access granted',
-      ],
-      skip: 'Click or press any key to skip',
+      lines: ['> TLS 1.3 handshake — OK', '> Access granted'],
     },
     loader: 'Building the network',
     footer: {

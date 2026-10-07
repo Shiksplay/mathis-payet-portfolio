@@ -270,6 +270,27 @@
     opacity: 1;
   }
 
+  /* Console de boot (BootSequence) : frappe caractere par caractere en
+     `steps()`, puis fondu du conteneur. Tout est en CSS, zero JS par frame. */
+  .boot-line {
+    clip-path: inset(0 100% 0 0);
+    animation: boot-type var(--type-ms) steps(var(--chars), end) var(--delay) forwards;
+  }
+  .boot-console {
+    animation: boot-out 250ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--out-delay) forwards;
+  }
+  @keyframes boot-type {
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes boot-out {
+    to {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
   /* Etiquette monospace (dates, categories, meta) */
   .label-mono {
     font-family: var(--font-mono);
