@@ -66,6 +66,7 @@ src/
 ├─ hooks/            # useCv, useTrackers, useScrollSpy, useTextScramble, …
 ├─ lib/
 │  ├─ signals.ts       # scroll/pointeur hors React (aucun re-render par frame)
+│  ├─ proofs.ts        # index compétence -> expériences qui la prouvent
 │  └─ cameraKeyframes.ts # un cadrage de caméra par section
 ├─ three/
 │  ├─ SceneCanvas.tsx  # racine du canvas (chargée en lazy)
@@ -94,6 +95,26 @@ Les libellés d'interface (boutons, titres de sections, lignes du terminal)
 sont dans `src/data/ui.ts`.
 
 Aucun texte n'est écrit en dur dans les composants : tout passe par `useCv()`.
+
+### Le site complète le CV, il ne le recopie pas
+
+Le recruteur a souvent le PDF sous les yeux. Trois mécanismes relient les deux :
+
+- **Compétences → preuves.** Chaque compétence a un identifiant stable
+  (`SKILL_IDS` / `SkillId` dans `cv.ts`). Une expérience ou un projet déclare
+  ce qu'il a mis en œuvre dans `uses: SkillId[]`. Dans la section Compétences,
+  une compétence ainsi prouvée devient un bouton qui indique où elle a été
+  pratiquée, avec un lien vers la carte (qui s'éclaire à l'arrivée, via
+  `:target`). **Règle : on n'ajoute un `uses` que si le texte du CV, ou
+  Mathis, l'atteste.** Une compétence sans preuve reste une simple étiquette.
+- **Rubrique du PDF.** Le bandeau de chaque section indique la rubrique du CV
+  qu'elle prolonge (`ui.cvBridge.rubrics`).
+- **« Ce que le CV ne dit pas ».** `cv.beyondCv[section]`, optionnel : une
+  phrase de Mathis affichée sous le titre. Rien n'est rendu tant qu'elle est
+  vide.
+
+Le CV reste téléchargeable depuis le hero, la nav (desktop et mobile) et la
+section Contact.
 
 ### Les cadrages de la caméra
 
@@ -206,8 +227,10 @@ commande a besoin du réseau à son premier lancement.
 ### Choix de performance
 
 - Le canvas est chargé en `React.lazy` : three.js part dans un chunk séparé
-  (≈ 264 kB gzip), après le premier rendu HTML. Charge initiale : **≈ 102 kB
-  gzip** de JS. Le LCP n'attend jamais la 3D.
+  (≈ 268 kB gzip), après le premier rendu HTML. Charge initiale : **≈ 105 kB
+  gzip** de JS (mesuré le 7 oct. 2026). Le LCP n'attend jamais la 3D.
+- Le hero n'a pas d'animation d'entrée (hors brouillage du nom) : son accroche
+  est l'élément LCP, et un `Reveal` la laissait à opacité nulle jusqu'à 0,9 s.
 - **Pas de `manualChunks` dans `vite.config.ts`, et c'est volontaire.** Un
   `manualChunks` qui regroupait three/R3F créait une arête statique entre le
   chunk d'entrée et le chunk three : Vite émettait alors un
@@ -235,6 +258,12 @@ commande a besoin du réseau à son premier lancement.
 
 - `prefers-reduced-motion` : 3D remplacée par le fallback statique, séquence de
   boot ignorée, effet « decrypt » désactivé, transitions CSS neutralisées.
+  La préférence est lue **dès la création du store** (`useAppStore`), pas dans
+  un effet : sinon le premier rendu voyait `false` et le chunk three partait
+  avant d'être annulé.
+- La séquence de boot ne bloque rien : une petite console `aria-hidden`, sans
+  focus ni écoute clavier, qui tape deux lignes en CSS et s'efface en 850 ms.
+  Le contenu est lisible et utilisable dès le premier rendu.
 - L'effet de brouillage des titres est `aria-hidden` ; le texte final est exposé
   via `aria-label` — un lecteur d'écran n'entend jamais les glyphes aléatoires.
 - Le canvas est `aria-hidden` et `pointer-events: none` : purement décoratif, il
