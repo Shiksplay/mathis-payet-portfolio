@@ -314,6 +314,117 @@
     }
   }
 
+  /* ------------------------------------------------------------------------
+     ETUDE DE CAS (CaseStudy / CaseStudyDiagram)
+     Seules `opacity` et `transform` sont animees. Les etats viennent de
+     `data-state` (pending / done / active / static) sur chaque <g>.
+     ------------------------------------------------------------------------ */
+  .cs-node {
+    transition: opacity 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .cs-node[data-state='pending'] {
+    opacity: 0.12;
+  }
+  .cs-node[data-state='done'] {
+    opacity: 0.6;
+  }
+  .cs-node[data-state='active'],
+  .cs-node[data-state='static'] {
+    opacity: 1;
+  }
+  .cs-stroke {
+    fill: none;
+    stroke: color-mix(in oklab, var(--color-muted) 70%, transparent);
+    stroke-width: 1.25;
+  }
+  .cs-fill {
+    fill: color-mix(in oklab, var(--color-deep) 80%, transparent);
+  }
+  /* 12 unites du viewBox : ~9 px a 375 px de large, ~17 px sur desktop.
+     Espacement serre pour que "Pare-feu · ACL" tienne entre les deux sites. */
+  .cs-label {
+    fill: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.01em;
+  }
+  .cs-label--strong {
+    fill: var(--color-ink);
+  }
+  /* Calque d'accent : ne s'allume que sur l'etape active. */
+  .cs-hl {
+    opacity: 0;
+    transition: opacity 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .cs-hl-stroke {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+  }
+  .cs-hl-fill {
+    fill: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+  .cs-node[data-state='active'] .cs-hl {
+    opacity: 1;
+  }
+  /* Paquet VPN : visible et en mouvement seulement pendant l'etape du VPN,
+     trois traversees puis il s'arrete au bout du tunnel. */
+  .cs-packet {
+    fill: var(--color-accent);
+    opacity: 0;
+  }
+  .cs-node[data-state='active'] .cs-packet {
+    opacity: 1;
+    animation: cs-packet 1.4s cubic-bezier(0.45, 0, 0.55, 1) 3 forwards;
+  }
+  @keyframes cs-packet {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(76px);
+    }
+  }
+  /* Sonde du pentest : trois impulsions pendant l'etape active. */
+  .cs-node[data-state='active'] .cs-scan {
+    animation: cs-scan 0.9s ease-in-out 3;
+  }
+  @keyframes cs-scan {
+    50% {
+      opacity: 0.25;
+    }
+  }
+  /* Etapes : celle au centre de l'ecran est pleinement lisible, les autres
+     sont attenuees pour guider l'oeil. */
+  .cs-step {
+    opacity: 0.4;
+    transition: opacity 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .cs-step[data-active='true'] {
+    opacity: 1;
+  }
+  .cs-step-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+    justify-content: center;
+    border-radius: 99px;
+    border: 1px solid var(--color-hairline);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .cs-step-btn:hover,
+  .cs-step-btn[data-active='true'] {
+    border-color: color-mix(in oklab, var(--color-accent) 60%, transparent);
+    color: var(--color-ink);
+  }
+
   /* Etiquette monospace (dates, categories, meta) */
   .label-mono {
     font-family: var(--font-mono);

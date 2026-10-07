@@ -26,7 +26,7 @@ export function Projects() {
   const { c, t } = useCv()
 
   return (
-    <SectionShell id="projets" index="03" title={t.headings.projects} wide>
+    <SectionShell id="projets" index="04" title={t.headings.projects} wide>
       {/* Affordance de glissement : affichee uniquement quand la bande defile
           reellement, donc masquee a partir de lg ou elle devient une grille. */}
       <p className="label-mono mb-6 flex items-center gap-3 lg:hidden">

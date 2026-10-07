@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react'
 import { useMemo } from 'react'
 import { Reveal } from '@/components/ui/Reveal'
 import { SectionShell } from '@/components/ui/SectionShell'
@@ -51,6 +52,20 @@ export function Experience() {
                     </li>
                   ))}
                 </ul>
+
+                {/* Lien vers l'etude de cas detaillee de cette experience. */}
+                {c.caseStudy.experienceId === xp.id ? (
+                  <a
+                    href="#etude-de-cas"
+                    className="group/case mt-6 inline-flex items-center gap-2 text-sm text-accent transition-colors hover:text-ink"
+                  >
+                    {t.caseStudy.seeCase}
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="size-4 transition-transform duration-200 group-hover/case:translate-x-0.5"
+                    />
+                  </a>
+                ) : null}
 
                 {/* Lien retour vers les competences : ce que l'experience a
                     mis en pratique, d'apres `uses` dans cv.ts. */}

@@ -81,6 +81,34 @@ export interface Experience {
   uses?: SkillId[]
 }
 
+/** Elements du schema de l'etude de cas (voir `CaseStudyDiagram`). */
+export type DiagramNodeId = 'vmware' | 'sites' | 'vpn' | 'services' | 'firewall' | 'pentest'
+
+export interface CaseStudyStep {
+  id: string
+  title: string
+  body: string
+  /** Elements du schema qui apparaissent a cette etape. */
+  nodes: DiagramNodeId[]
+}
+
+/**
+ * Etude de cas animee d'une experience.
+ *
+ * REGLE : le contenu ne reprend que ce que le CV (ou Mathis) atteste. Tant que
+ * la topologie reelle n'est pas fournie, le schema est un SCHEMA DE PRINCIPE
+ * (ordre de construction), et sa legende le dit.
+ */
+export interface CaseStudy {
+  experienceId: ExperienceId
+  title: string
+  intro: string
+  caption: string
+  /** Libelles affiches dans le schema SVG. */
+  labels: Record<DiagramNodeId | 'site1' | 'site2', string>
+  steps: CaseStudyStep[]
+}
+
 export interface Education {
   title: string
   org: string
@@ -128,6 +156,8 @@ export interface CvContent {
   profile: string
   projects: Project[]
   experiences: Experience[]
+  /** Etude de cas animee (section `etude-de-cas`). */
+  caseStudy: CaseStudy
   education: Education[]
   /** Cle = nom de categorie (traduit), valeur = liste de competences. */
   skills: Record<string, Skill[]>
@@ -218,6 +248,59 @@ export const cv: Record<Lang, CvContent> = {
         ],
       },
     ],
+    // Contenu repris des puces du CV, sans ajout. A enrichir avec les
+    // reponses de Mathis (topologie reelle, role personnel, difficultes,
+    // resultats).
+    caseStudy: {
+      experienceId: 'infra-multisite',
+      title: 'Infrastructure multisite',
+      intro:
+        "Projet académique de BUT RT2 (déc. 2025 – mars 2026) : concevoir, déployer puis sécuriser le réseau virtuel d'une entreprise répartie sur plusieurs sites.",
+      caption:
+        "Schéma de principe établi d'après le CV : il montre l'ordre de construction, pas la topologie exacte.",
+      labels: {
+        vmware: 'VMware',
+        sites: 'Sites',
+        site1: 'Site 1',
+        site2: 'Site 2',
+        vpn: 'VPN',
+        services: 'DHCP · AD · Squid · SSL · RDP',
+        firewall: 'Pare-feu · ACL',
+        pentest: 'Pentest',
+      },
+      steps: [
+        {
+          id: 'virtualiser',
+          title: 'Virtualiser',
+          body: "Conception et déploiement d'un réseau virtuel sous VMware pour une entreprise multisite.",
+          nodes: ['vmware', 'sites'],
+        },
+        {
+          id: 'interconnecter',
+          title: 'Interconnecter les sites',
+          body: 'Liaison des sites par VPN et interconnexion des équipements.',
+          nodes: ['vpn'],
+        },
+        {
+          id: 'services',
+          title: 'Déployer les services',
+          body: 'Adressage IP et DHCP, serveurs internes, Active Directory, proxy Squid, certificats SSL, accès RDP.',
+          nodes: ['services'],
+        },
+        {
+          id: 'securiser',
+          title: 'Sécuriser',
+          body: 'Mise en place du pare-feu et des ACL.',
+          nodes: ['firewall'],
+        },
+        {
+          id: 'tester',
+          title: "Tester l'intrusion",
+          body: "Tests d'intrusion (pentesting) sur l'infrastructure sécurisée.",
+          nodes: ['pentest'],
+        },
+      ],
+    },
     education: [
       {
         title: 'BUT Réseaux et Télécommunications, parcours Cybersécurité',
@@ -362,6 +445,56 @@ export const cv: Record<Lang, CvContent> = {
         ],
       },
     ],
+    caseStudy: {
+      experienceId: 'infra-multisite',
+      title: 'Multi-site infrastructure',
+      intro:
+        'BUT RT2 academic project (Dec. 2025 – Mar. 2026): design, deploy, then secure the virtualized network of a company spread across several sites.',
+      caption:
+        'Conceptual diagram based on the resume: it shows the build order, not the exact topology.',
+      labels: {
+        vmware: 'VMware',
+        sites: 'Sites',
+        site1: 'Site 1',
+        site2: 'Site 2',
+        vpn: 'VPN',
+        services: 'DHCP · AD · Squid · SSL · RDP',
+        firewall: 'Firewall · ACL',
+        pentest: 'Pentest',
+      },
+      steps: [
+        {
+          id: 'virtualiser',
+          title: 'Virtualize',
+          body: 'Designed and deployed a virtualized network in VMware for a multi-site company.',
+          nodes: ['vmware', 'sites'],
+        },
+        {
+          id: 'interconnecter',
+          title: 'Connect the sites',
+          body: 'Linked the sites over VPN and interconnected the devices.',
+          nodes: ['vpn'],
+        },
+        {
+          id: 'services',
+          title: 'Deploy the services',
+          body: 'IP addressing and DHCP, internal servers, Active Directory, Squid proxy, SSL certificates, RDP access.',
+          nodes: ['services'],
+        },
+        {
+          id: 'securiser',
+          title: 'Harden',
+          body: 'Set up the firewall and ACLs.',
+          nodes: ['firewall'],
+        },
+        {
+          id: 'tester',
+          title: 'Test for intrusion',
+          body: 'Penetration testing of the hardened infrastructure.',
+          nodes: ['pentest'],
+        },
+      ],
+    },
     education: [
       {
         title: "BUT (Bachelor's) in Networks & Telecommunications, Cybersecurity track",

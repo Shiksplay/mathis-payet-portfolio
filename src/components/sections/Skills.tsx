@@ -32,7 +32,7 @@ export function Skills() {
   const [active, setActive] = useState<SkillId | null>(null)
 
   return (
-    <SectionShell id="competences" index="05" title={t.headings.skills}>
+    <SectionShell id="competences" index="06" title={t.headings.skills}>
       {/* Fond propre a la legende : sans lui, elle se perd sur le noyau 3D. */}
       <p className="mb-10 flex max-w-2xl items-start gap-3 rounded-xl border border-hairline/70 bg-abyss/70 px-4 py-3 text-sm leading-relaxed text-ink/80 backdrop-blur-sm">
         <span aria-hidden="true" className="skill-dot mt-[7px]" data-proven="true" />

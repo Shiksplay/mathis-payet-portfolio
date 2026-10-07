@@ -45,6 +45,14 @@ export interface UiStrings {
     beyondCv: string
     downloadShort: string
   }
+  caseStudy: {
+    /** "Étape" (suivi du numero). */
+    step: string
+    /** Nom accessible de la liste des etapes. */
+    stepsNav: string
+    /** Lien depuis la carte d'experience. */
+    seeCase: string
+  }
   /** Relation competences <-> experiences ("ou est-ce prouve ?"). */
   proofs: {
     legend: string
@@ -108,6 +116,7 @@ export const ui: Record<Lang, UiStrings> = {
       rubrics: {
         profil: 'CV › Profil',
         experience: 'CV › Expérience professionnelle & projets',
+        'etude-de-cas': 'CV › Expérience › en détail',
         projets: 'En plus du CV',
         formation: 'CV › Formation',
         competences: 'CV › Compétences',
@@ -117,6 +126,11 @@ export const ui: Record<Lang, UiStrings> = {
       },
       beyondCv: 'Ce que le CV ne dit pas',
       downloadShort: 'CV',
+    },
+    caseStudy: {
+      step: 'Étape',
+      stepsNav: 'Étapes du projet',
+      seeCase: "Voir l'étude de cas",
     },
     proofs: {
       legend:
@@ -178,6 +192,7 @@ export const ui: Record<Lang, UiStrings> = {
       rubrics: {
         profil: 'Resume › Profile',
         experience: 'Resume › Experience & projects',
+        'etude-de-cas': 'Resume › Experience › in depth',
         projets: 'Not in the resume',
         formation: 'Resume › Education',
         competences: 'Resume › Skills',
@@ -187,6 +202,11 @@ export const ui: Record<Lang, UiStrings> = {
       },
       beyondCv: 'What the resume does not say',
       downloadShort: 'Resume',
+    },
+    caseStudy: {
+      step: 'Step',
+      stepsNav: 'Project steps',
+      seeCase: 'See the case study',
     },
     proofs: {
       legend:

@@ -6,6 +6,7 @@ import { Scene } from '@/components/layout/Scene'
 import { ScrollProgressBar } from '@/components/layout/ScrollProgressBar'
 import { SkipLink } from '@/components/layout/SkipLink'
 import { Activities } from '@/components/sections/Activities'
+import { CaseStudy } from '@/components/sections/CaseStudy'
 import { Contact } from '@/components/sections/Contact'
 import { Education } from '@/components/sections/Education'
 import { Experience } from '@/components/sections/Experience'
@@ -53,6 +54,7 @@ export default function App() {
             <Hero />
             <Profile />
             <Experience />
+            <CaseStudy />
             <Projects />
             <Education />
             <Skills />

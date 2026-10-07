@@ -116,6 +116,26 @@ Le recruteur a souvent le PDF sous les yeux. Trois mécanismes relient les deux 
 Le CV reste téléchargeable depuis le hero, la nav (desktop et mobile) et la
 section Contact.
 
+### L'étude de cas (section `etude-de-cas`)
+
+`cv.caseStudy` décrit une expérience étape par étape ; chaque étape déclare
+les éléments du schéma (`nodes`) qu'elle fait apparaître. Le schéma SVG
+(`components/case-study/CaseStudyDiagram.tsx`) est épinglé (`sticky`) pendant
+que les étapes défilent ; un `IntersectionObserver` dont la bande de détection
+est la « ligne de lecture » choisit l'étape active (centre de l'écran en deux
+colonnes, centre de la zone visible sous le schéma en une colonne). Pas de
+GSAP. En reduced-motion : pas de sticky, schéma complet, étapes toutes lisibles.
+
+**Le contenu actuel ne reprend que les puces du CV** et le schéma est un
+schéma de *principe* (sa légende le dit). Pour le remplacer par la topologie
+réelle : ajuster `CaseStudyDiagram.tsx` et les `labels` / `steps` de
+`cv.caseStudy`, dans les deux langues.
+
+Insérer une section dans la page implique : une entrée dans `SECTIONS`
+(`data/sections.ts`), dans `ContentSectionId`, dans `ui.cvBridge.rubrics`
+(FR/EN), un cadrage dans `lib/cameraKeyframes.ts`, et la renumérotation des
+`index` des sections suivantes.
+
 ### Les cadrages de la caméra
 
 **`src/lib/cameraKeyframes.ts`** contient une entrée par section :
