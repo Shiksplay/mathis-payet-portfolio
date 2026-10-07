@@ -22,7 +22,8 @@ export function Experience() {
             </span>
 
             <Reveal delay={index * 0.1}>
-              <TiltCard className="p-6 sm:p-8">
+              {/* Pas d'inclinaison : la carte est surtout du texte a lire. */}
+              <TiltCard maxTilt={0} className="p-6 sm:p-8">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
                   <p className="label-mono text-accent/80">{xp.period}</p>
                   <p className="label-mono">{xp.type}</p>

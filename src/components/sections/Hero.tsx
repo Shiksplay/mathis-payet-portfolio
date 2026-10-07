@@ -84,7 +84,13 @@ export function Hero() {
               {c.location}
             </span>
             <span className="inline-flex items-center gap-2 font-mono tracking-wider">
-              <ArrowDown className="size-3.5 animate-bounce text-accent/60" aria-hidden="true" />
+              {/* Trois rebonds pour attirer l'oeil, puis immobile : une
+                  animation infinie finit par distraire de la lecture. */}
+              <ArrowDown
+                className="size-3.5 animate-bounce text-accent/60"
+                style={{ animationIterationCount: 3 }}
+                aria-hidden="true"
+              />
               {t.hero.scrollHint}
             </span>
           </div>

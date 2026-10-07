@@ -53,7 +53,7 @@ export function Projects() {
               key={project.title}
               className="flex w-[min(85vw,30rem)] shrink-0 snap-start lg:w-auto"
             >
-              <TiltCard thick maxTilt={5} className="group/card flex w-full flex-col p-7 sm:p-9">
+              <TiltCard thick maxTilt={3} className="group/card flex w-full flex-col p-7 sm:p-9">
                 {/* Numero de projet en filigrane : ancre visuelle a grande
                     echelle, typique du traitement editorial. */}
                 <div className="flex items-start justify-between gap-6">
