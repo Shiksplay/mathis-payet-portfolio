@@ -87,9 +87,11 @@ export function Nav() {
         </a>
 
         <div className="flex items-center gap-2">
-          {/* Navigation desktop */}
+          {/* Navigation desktop, a partir de xl : avec huit sections, le
+              bouton CV et le choix de langue, les liens ne tiennent pas en
+              dessous de ~1 100 px (ils passaient sur deux lignes a 768). */}
           <nav aria-label={t.nav.label}>
-            <ul className="hidden items-center gap-7 text-sm md:flex">
+            <ul className="hidden items-center gap-7 text-sm xl:flex">
               {NAV_SECTIONS.map((section) => (
                 <li key={section.id}>
                   <a
@@ -126,7 +128,7 @@ export function Nav() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t.nav.closeMenu : t.nav.menu}
-            className="flex size-9 items-center justify-center rounded-full border border-hairline text-ink transition-colors hover:border-accent/50 hover:text-accent md:hidden"
+            className="flex size-9 items-center justify-center rounded-full border border-hairline text-ink transition-colors hover:border-accent/50 hover:text-accent xl:hidden"
           >
             {open ? (
               <X className="size-4" aria-hidden="true" />
@@ -140,7 +142,7 @@ export function Nav() {
 
       {/* Panneau mobile — retire du DOM quand ferme, pour ne pas piéger le focus. */}
       {open ? (
-        <div ref={panelRef} className="px-6 pb-4 md:hidden">
+        <div ref={panelRef} className="px-6 pb-4 xl:hidden">
           <nav
             id="mobile-nav"
             aria-label={t.nav.label}
