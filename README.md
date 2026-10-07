@@ -229,6 +229,13 @@ commande a besoin du réseau à son premier lancement.
 - Le canvas est chargé en `React.lazy` : three.js part dans un chunk séparé
   (≈ 268 kB gzip), après le premier rendu HTML. Charge initiale : **≈ 105 kB
   gzip** de JS (mesuré le 7 oct. 2026). Le LCP n'attend jamais la 3D.
+- **Polices non bloquantes.** La feuille Google Fonts est chargée en
+  `media="print"` puis activée (`onload`) : elle bloquait le premier rendu
+  ≈ 1,4 s sur mobile. Pour que la bascule police système → police web ne
+  décale pas la page, chaque police a un repli calibré (`@font-face … Fallback`
+  avec `size-adjust` / `ascent-override` dans `index.css`). Lighthouse mobile :
+  Performance ≈ 47 → ≈ 78, FCP 4,0 → 2,2 s, CLS ≤ 0,01. Si une police change,
+  recalculer ces métriques.
 - Le hero n'a pas d'animation d'entrée (hors brouillage du nom) : son accroche
   est l'élément LCP, et un `Reveal` la laissait à opacité nulle jusqu'à 0,9 s.
 - **Pas de `manualChunks` dans `vite.config.ts`, et c'est volontaire.** Un

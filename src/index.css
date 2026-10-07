@@ -8,10 +8,11 @@
    --animate-x     ->  animate-x
    ========================================================================== */
 @theme {
-  /* Typographie */
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+  /* Typographie — chaque police web est suivie de son repli "calibre"
+     (voir les @font-face plus bas). */
+  --font-display: 'Space Grotesk', 'Space Grotesk Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, 'Cascadia Code', monospace;
 
   /* Palette — fond quasi noir, un seul accent dominant a la fois */
   --color-abyss: #05070a;
@@ -57,6 +58,40 @@
       background-position: 64px 64px;
     }
   }
+}
+
+/* ==========================================================================
+   POLICES DE REPLI CALIBREES
+   Les polices web se chargent sans bloquer le rendu (voir index.html) : le
+   texte s'affiche d'abord dans une police systeme, puis bascule. Pour que la
+   bascule ne deplace pas la mise en page (CLS), la police systeme est
+   redimensionnee aux metriques de la police web. Valeurs mesurees dans
+   Chromium (largeur moyenne + fontBoundingBox, canvas.measureText) le
+   7 oct. 2026 ; celles d'Inter concordent avec les valeurs publiees.
+   ========================================================================== */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 106.9%;
+  ascent-override: 90.74%;
+  descent-override: 22.45%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  src: local('Arial');
+  size-adjust: 102.82%;
+  ascent-override: 95.31%;
+  descent-override: 28.2%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New');
+  size-adjust: 99.98%;
+  ascent-override: 102.02%;
+  descent-override: 30%;
+  line-gap-override: 0%;
 }
 
 /* ==========================================================================

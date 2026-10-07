@@ -45,13 +45,25 @@
     />
     <meta name="twitter:image" content="https://mathis-payet.vercel.app/og.png" />
 
-    <!-- Polices : Space Grotesk (titres), Inter (corps), JetBrains Mono (labels/terminal) -->
+    <!-- Polices : Space Grotesk (titres), Inter (corps), JetBrains Mono (labels/terminal).
+         Chargement NON BLOQUANT : la feuille Google Fonts bloquait le premier
+         rendu ~1,4 s sur mobile (Lighthouse). `media="print"` la telecharge sans
+         bloquer, `onload` l'active ; le texte s'affiche d'abord dans la police
+         systeme puis bascule (display=swap). <noscript> : repli sans JS. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      />
+    </noscript>
 
     <!-- Donnees structurees : ameliore la comprehension du profil par les moteurs. -->
     <script type="application/ld+json">
