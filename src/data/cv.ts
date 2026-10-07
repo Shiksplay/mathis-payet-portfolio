@@ -152,27 +152,31 @@ export const cv: Record<Lang, CvContent> = {
     email: 'mathis.payet@rt-iut.re',
     linkedin: 'https://linkedin.com/in/mathis-payet-a45379341',
     availability: 'Disponible pour une alternance — année scolaire 2026-2027',
-    tagline: 'Étudiant passionné par la programmation et le développement',
+    // Reformule le profil du CV ("configuration, securisation et gestion
+    // d'infrastructures reseau") : aligne l'accroche sur l'alternance visee.
+    tagline: 'Étudiant en cybersécurité, je configure et sécurise des infrastructures réseau',
     profile:
       "Étudiant entrant en 3e année de BUT Réseaux et Télécommunications, parcours Cybersécurité, à l'IUT de La Réunion. Je recherche une alternance en administration et sécurité des réseaux pour l'année scolaire 2026-2027. Curieux et rigoureux, je souhaite mettre en pratique mes compétences en configuration, sécurisation et gestion d'infrastructures réseau au sein d'une équipe technique.",
+    // Ordre : le projet lie a l'infrastructure (salle serveur) d'abord,
+    // coherent avec l'alternance visee en administration/securite reseaux.
     projects: [
       {
         index: '01',
+        title: 'SAÉ 1.02 — Système de mesure Température/Hygrométrie avec Raspberry Pi',
+        desc: "Système de supervision de la température et de l'humidité d'une salle serveur",
+        tags: ['IoT', 'Raspberry Pi', 'Capteurs'],
+      },
+      {
+        index: '02',
         title: "Jeu intégré à un site web d'entreprise",
         desc: "Mini-jeu ludique et professionnel intégré au site web d'une entreprise du bâtiment",
         tags: ['Jeu vidéo', 'Web', 'Game design'],
       },
       {
-        index: '02',
+        index: '03',
         title: 'The Forgotten',
         desc: "Jeu solo d'horreur développé sur Unreal Engine 5 dans une ville abandonnée mystérieuse",
         tags: ['Jeu vidéo', 'Unreal Engine', 'Horreur'],
-      },
-      {
-        index: '03',
-        title: 'SAÉ 1.02 — Système de mesure Température/Hygrométrie avec Raspberry Pi',
-        desc: "Système de supervision de la température et de l'humidité d'une salle serveur",
-        tags: ['IoT', 'Raspberry Pi', 'Capteurs'],
       },
     ],
     experiences: [
@@ -296,27 +300,27 @@ export const cv: Record<Lang, CvContent> = {
     email: 'mathis.payet@rt-iut.re',
     linkedin: 'https://linkedin.com/in/mathis-payet-a45379341',
     availability: 'Available for a work-study program — 2026-2027 academic year',
-    tagline: 'Student passionate about programming and software development',
+    tagline: 'Cybersecurity student — I configure and secure network infrastructure',
     profile:
       'Third-year student in the Networks & Telecommunications program (BUT RT), Cybersecurity track, at IUT de La Réunion. Looking for a work-study position in network administration and security for the 2026-2027 academic year. Curious and rigorous, I want to put my configuration, hardening, and network infrastructure management skills into practice within a technical team.',
     projects: [
       {
         index: '01',
+        title: 'SAÉ 1.02 — Temperature/Humidity monitoring system with Raspberry Pi',
+        desc: 'Monitoring system for the temperature and humidity of a server room',
+        tags: ['IoT', 'Raspberry Pi', 'Sensors'],
+      },
+      {
+        index: '02',
         title: 'Game embedded in a company website',
         desc: 'A playful yet professional mini-game embedded in the website of a construction company',
         tags: ['Game', 'Web', 'Game design'],
       },
       {
-        index: '02',
+        index: '03',
         title: 'The Forgotten',
         desc: 'Single-player horror game built in Unreal Engine 5, set in a mysterious abandoned city',
         tags: ['Game', 'Unreal Engine', 'Horror'],
-      },
-      {
-        index: '03',
-        title: 'SAÉ 1.02 — Temperature/Humidity monitoring system with Raspberry Pi',
-        desc: 'Monitoring system for the temperature and humidity of a server room',
-        tags: ['IoT', 'Raspberry Pi', 'Sensors'],
       },
     ],
     experiences: [
