@@ -1,10 +1,13 @@
+import { useMemo } from 'react'
 import { Reveal } from '@/components/ui/Reveal'
 import { SectionShell } from '@/components/ui/SectionShell'
 import { TiltCard } from '@/components/ui/TiltCard'
 import { useCv } from '@/hooks/useCv'
+import { buildSkillLabels } from '@/lib/proofs'
 
 export function Experience() {
   const { c, t } = useCv()
+  const skillLabels = useMemo(() => buildSkillLabels(c), [c])
 
   return (
     <SectionShell id="experience" index="02" title={t.headings.experience}>
@@ -12,7 +15,9 @@ export function Experience() {
           est un <ol> — l'ordre chronologique porte du sens. */}
       <ol className="relative space-y-6 before:absolute before:top-2 before:bottom-2 before:left-[7px] before:w-px before:bg-gradient-to-b before:from-accent/45 before:via-hairline before:to-transparent sm:space-y-8">
         {c.experiences.map((xp, index) => (
-          <li key={xp.id} id={`xp-${xp.id}`} className="relative pl-9 sm:pl-12">
+          // `xp-target` : cible des liens "preuve" de la section Competences
+          // (eclairage a l'arrivee, voir `index.css`).
+          <li key={xp.id} id={`xp-${xp.id}`} className="xp-target relative pl-9 sm:pl-12">
             {/* Noeud de la timeline, aligne sur le filet. */}
             <span
               aria-hidden="true"
@@ -46,6 +51,24 @@ export function Experience() {
                     </li>
                   ))}
                 </ul>
+
+                {/* Lien retour vers les competences : ce que l'experience a
+                    mis en pratique, d'apres `uses` dans cv.ts. */}
+                {xp.uses?.length ? (
+                  <div className="mt-7 border-t border-hairline/60 pt-5">
+                    <p className="label-mono">{t.proofs.usedSkills}</p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {xp.uses.map((id) => (
+                        <li
+                          key={id}
+                          className="rounded-full border border-accent/25 px-3 py-1 font-mono text-[10px] tracking-[0.12em] text-ink/80 uppercase"
+                        >
+                          {skillLabels.get(id) ?? id}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </TiltCard>
             </Reveal>
           </li>

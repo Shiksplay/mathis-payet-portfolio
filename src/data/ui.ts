@@ -31,6 +31,12 @@ export interface UiStrings {
     interests: string
     contact: string
   }
+  /** Relation competences <-> experiences ("ou est-ce prouve ?"). */
+  proofs: {
+    legend: string
+    provenBy: string
+    usedSkills: string
+  }
   contact: {
     intro: string
     emailLabel: string
@@ -82,6 +88,12 @@ export const ui: Record<Lang, UiStrings> = {
       interests: "Centres d'intérêt",
       contact: 'Contact',
     },
+    proofs: {
+      legend:
+        'Pastille lumineuse : compétence mise en œuvre dans une expérience. Survolez-la ou sélectionnez-la pour voir où.',
+      provenBy: 'Mise en œuvre dans',
+      usedSkills: 'Compétences mobilisées',
+    },
     contact: {
       intro: 'Une alternance, une question, un échange — je réponds rapidement.',
       emailLabel: 'E-mail',
@@ -129,6 +141,12 @@ export const ui: Record<Lang, UiStrings> = {
       languages: 'Languages',
       interests: 'Interests',
       contact: 'Contact',
+    },
+    proofs: {
+      legend:
+        'Glowing dot: a skill put into practice in one of my experiences. Hover or select it to see where.',
+      provenBy: 'Applied in',
+      usedSkills: 'Skills applied',
     },
     contact: {
       intro: 'A work-study offer, a question, a conversation — I reply quickly.',
