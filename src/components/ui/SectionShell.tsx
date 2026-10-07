@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
+import type { ContentSectionId } from '@/data/sections'
+import { useCv } from '@/hooks/useCv'
 import { cn } from '@/lib/cn'
 import { DisplayHeading } from './DisplayHeading'
 
 interface SectionShellProps {
-  id: string
+  id: ContentSectionId
   /** Numero affiche en monospace (ex. "02"). */
   index: string
   title: string
@@ -20,8 +22,11 @@ interface SectionShellProps {
  *
  * STRUCTURE (inspiree des sites editoriaux type landonorris.com)
  * --------------------------------------------------------------
- *   1. un filet pleine largeur avec le numero et le nom de la section ;
- *   2. un titre display surdimensionne qui occupe toute la largeur ;
+ *   1. un filet pleine largeur avec le numero de la section et la RUBRIQUE DU
+ *      PDF a laquelle elle correspond ("CV › Formation") : le recruteur qui a
+ *      le CV sous les yeux sait ou il en est ;
+ *   2. un titre display surdimensionne qui occupe toute la largeur, suivi le
+ *      cas echeant de l'accroche et de la ligne "ce que le CV ne dit pas" ;
  *   3. le contenu, ramene dans une colonne de lecture etroite.
  *
  * Le contraste d'echelle entre (2) et (3) est ce qui fait respirer la page :
@@ -39,7 +44,9 @@ export function SectionShell({
   className,
   wide = false,
 }: SectionShellProps) {
+  const { c, t } = useCv()
   const titleId = `${id}-title`
+  const beyond = c.beyondCv?.[id]
 
   return (
     <section
@@ -54,9 +61,7 @@ export function SectionShell({
             {index}
           </span>
           <span aria-hidden="true" className="h-px flex-1 bg-hairline/70" />
-          {kicker ? (
-            <span className="label-mono hidden sm:inline">{kicker}</span>
-          ) : null}
+          <span className="label-mono text-right">{t.cvBridge.rubrics[id]}</span>
         </div>
 
         <DisplayHeading
@@ -64,6 +69,15 @@ export function SectionShell({
           text={title}
           className="mt-7 text-ink sm:mt-9"
         />
+
+        {kicker ? <p className="mt-5 max-w-2xl text-base text-muted sm:text-lg">{kicker}</p> : null}
+
+        {beyond ? (
+          <p className="mt-5 max-w-2xl border-l-2 border-accent/60 pl-4 text-base leading-relaxed text-ink/90">
+            <span className="label-mono block text-accent/80">{t.cvBridge.beyondCv}</span>
+            <span className="mt-1 block">{beyond}</span>
+          </p>
+        ) : null}
       </div>
 
       {/* ---------- Contenu ---------- */}

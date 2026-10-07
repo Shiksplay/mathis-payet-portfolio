@@ -1,4 +1,5 @@
 import type { Lang } from './cv'
+import type { ContentSectionId } from './sections'
 
 /**
  * Libelles de l'interface (navigation, boutons, titres de sections, sequence de
@@ -30,6 +31,15 @@ export interface UiStrings {
     languages: string
     interests: string
     contact: string
+  }
+  /**
+   * Pont CV <-> site : rubrique du PDF a laquelle chaque section correspond
+   * (affichee dans le bandeau de section), et libelles associes.
+   */
+  cvBridge: {
+    rubrics: Record<ContentSectionId, string>
+    beyondCv: string
+    downloadShort: string
   }
   /** Relation competences <-> experiences ("ou est-ce prouve ?"). */
   proofs: {
@@ -88,6 +98,20 @@ export const ui: Record<Lang, UiStrings> = {
       interests: "Centres d'intérêt",
       contact: 'Contact',
     },
+    cvBridge: {
+      rubrics: {
+        profil: 'CV › Profil',
+        experience: 'CV › Expérience professionnelle & projets',
+        projets: 'En plus du CV',
+        formation: 'CV › Formation',
+        competences: 'CV › Compétences',
+        engagements: 'CV › Engagements & activités',
+        langues: "CV › Langues · Centres d'intérêt",
+        contact: 'CV › En-tête',
+      },
+      beyondCv: 'Ce que le CV ne dit pas',
+      downloadShort: 'CV',
+    },
     proofs: {
       legend:
         'Pastille lumineuse : compétence mise en œuvre dans une expérience. Survolez-la ou sélectionnez-la pour voir où.',
@@ -141,6 +165,20 @@ export const ui: Record<Lang, UiStrings> = {
       languages: 'Languages',
       interests: 'Interests',
       contact: 'Contact',
+    },
+    cvBridge: {
+      rubrics: {
+        profil: 'Resume › Profile',
+        experience: 'Resume › Experience & projects',
+        projets: 'Not in the resume',
+        formation: 'Resume › Education',
+        competences: 'Resume › Skills',
+        engagements: 'Resume › Activities',
+        langues: 'Resume › Languages · Interests',
+        contact: 'Resume › Header',
+      },
+      beyondCv: 'What the resume does not say',
+      downloadShort: 'Resume',
     },
     proofs: {
       legend:

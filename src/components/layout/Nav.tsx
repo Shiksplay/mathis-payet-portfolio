@@ -1,4 +1,4 @@
-import { Menu, X } from 'lucide-react'
+import { Download, Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SECTIONS } from '@/data/sections'
 import { useCv } from '@/hooks/useCv'
@@ -105,7 +105,19 @@ export function Nav() {
             </ul>
           </nav>
 
-          <LangToggle className="ml-2" />
+          {/* Telechargement du CV, visible en permanence (desktop ET mobile) :
+              c'est le document que le recruteur vient chercher. */}
+          <a
+            href="/cv/CV_Mathis_Payet.pdf"
+            download="CV_Mathis_Payet.pdf"
+            aria-label={t.hero.downloadCv}
+            className="ml-2 inline-flex h-9 items-center gap-2 rounded-full border border-accent/40 px-3.5 font-mono text-[11px] tracking-[0.14em] text-accent uppercase transition-colors hover:bg-accent/10"
+          >
+            <Download className="size-3.5" aria-hidden="true" />
+            <span aria-hidden="true">{t.cvBridge.downloadShort}</span>
+          </a>
+
+          <LangToggle className="ml-1" />
 
           {/* Bouton menu mobile */}
           <button

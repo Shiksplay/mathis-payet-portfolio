@@ -6,6 +6,8 @@
  * forme (`CvContent`), ce qui garantit qu'aucune cle ne peut manquer d'un cote.
  */
 
+import type { ContentSectionId } from './sections'
+
 export type Lang = 'fr' | 'en'
 
 export const LANGS: readonly Lang[] = ['fr', 'en'] as const
@@ -133,6 +135,12 @@ export interface CvContent {
   activities: Activity[]
   languages: LanguageSkill[]
   interests: string[]
+  /**
+   * "Ce que le CV ne dit pas", par section : une phrase de Mathis, affichee
+   * sous le titre de la section. Optionnel ; rien n'est rendu tant que ce
+   * n'est pas renseigne (aucun texte invente).
+   */
+  beyondCv?: Partial<Record<ContentSectionId, string>>
 }
 
 export const cv: Record<Lang, CvContent> = {
