@@ -12,7 +12,7 @@ export function Experience() {
           est un <ol> — l'ordre chronologique porte du sens. */}
       <ol className="relative space-y-6 before:absolute before:top-2 before:bottom-2 before:left-[7px] before:w-px before:bg-gradient-to-b before:from-accent/45 before:via-hairline before:to-transparent sm:space-y-8">
         {c.experiences.map((xp, index) => (
-          <li key={xp.title} className="relative pl-9 sm:pl-12">
+          <li key={xp.id} id={`xp-${xp.id}`} className="relative pl-9 sm:pl-12">
             {/* Noeud de la timeline, aligne sur le filet. */}
             <span
               aria-hidden="true"

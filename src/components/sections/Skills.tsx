@@ -26,9 +26,9 @@ export function Skills() {
                   propagation de gauche a droite, comme un reseau qui s'active. */}
               <ul className="mt-5 flex flex-wrap gap-2.5">
                 {items.map((item, itemIndex) => (
-                  <li key={item}>
+                  <li key={item.id}>
                     <Reveal delay={groupIndex * 0.08 + itemIndex * 0.035} y={8}>
-                      <span className="skill-node">{item}</span>
+                      <span className="skill-node">{item.label}</span>
                     </Reveal>
                   </li>
                 ))}

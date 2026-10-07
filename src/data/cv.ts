@@ -10,12 +10,73 @@ export type Lang = 'fr' | 'en'
 
 export const LANGS: readonly Lang[] = ['fr', 'en'] as const
 
+/**
+ * Identifiants stables des competences, communs aux deux langues.
+ *
+ * Ils servent a relier une competence aux experiences et projets qui la
+ * PROUVENT (`uses`) : le typage interdit une faute de frappe, et la parite
+ * FR/EN vient de ce que les identifiants ne se traduisent pas.
+ */
+export const SKILL_IDS = [
+  'vlan',
+  'dhcp',
+  'dns',
+  'routing',
+  'active-directory',
+  'gpo',
+  'acl',
+  'windows-server',
+  'firewall',
+  'pfsense',
+  'pentest',
+  'security-testing',
+  'dmz',
+  'wireshark',
+  'nmap',
+  'ssl',
+  'vpn',
+  'vmware',
+  'docker',
+  'linux',
+  'squid',
+  'apache',
+  'nginx',
+  'mysql',
+  'rdp',
+  'python',
+  'c-cpp',
+  'js-ts',
+  'react',
+  'nodejs',
+  'web-dev',
+  'glpi',
+  'asterisk',
+  'anssi-mooc',
+] as const
+
+export type SkillId = (typeof SKILL_IDS)[number]
+
+export interface Skill {
+  id: SkillId
+  label: string
+}
+
+/** Ancres des experiences (identiques en FR et en EN). */
+export type ExperienceId = 'stage-region-reunion' | 'infra-multisite'
+
 export interface Experience {
+  /** Ancre HTML de la carte (`#xp-<id>`), cible des liens "preuve". */
+  id: ExperienceId
   title: string
   org: string
   type: string
   period: string
   bullets: string[]
+  /**
+   * Competences mises en oeuvre, UNIQUEMENT si le texte de l'experience (ou
+   * Mathis) l'atteste. Une competence sans preuve n'est reliee a rien.
+   */
+  uses?: SkillId[]
 }
 
 export interface Education {
@@ -48,6 +109,8 @@ export interface Project {
   tags: string[]
   /** Numero de reference du projet dans la galerie ("01", "02"...). */
   index: string
+  /** Competences prouvees par ce projet (meme regle que `Experience.uses`). */
+  uses?: SkillId[]
 }
 
 export interface CvContent {
@@ -65,7 +128,7 @@ export interface CvContent {
   experiences: Experience[]
   education: Education[]
   /** Cle = nom de categorie (traduit), valeur = liste de competences. */
-  skills: Record<string, string[]>
+  skills: Record<string, Skill[]>
   softSkills: string[]
   activities: Activity[]
   languages: LanguageSkill[]
@@ -106,6 +169,7 @@ export const cv: Record<Lang, CvContent> = {
     ],
     experiences: [
       {
+        id: 'stage-region-reunion',
         title: 'Assistance technique & projets informatiques',
         org: "Région Réunion – Direction de l'Éducation et de la Vie Lycéenne (E-éducation secteur sud et est)",
         type: 'Stage en milieu professionnel',
@@ -115,8 +179,10 @@ export const cv: Record<Lang, CvContent> = {
           "Mise en place d'une solution de ToIP (Asterisk)",
           "Montée en compétences sur l'inventaire GLPI, la configuration de switchs, le câblage réseau et la configuration de bornes Wi-Fi",
         ],
+        uses: ['glpi', 'asterisk'],
       },
       {
+        id: 'infra-multisite',
         title: "Conception & déploiement d'une infrastructure réseau multisite sécurisée",
         org: 'IUT de La Réunion, BUT RT2',
         type: 'Projet académique',
@@ -125,6 +191,18 @@ export const cv: Record<Lang, CvContent> = {
           "Conception et déploiement d'un réseau virtuel pour une entreprise multisite avec VPN (VMware)",
           'Configuration des services réseau : adressage IP/DHCP, serveurs internes, interconnexion des équipements, proxy Squid, certificats SSL, RDP, Active Directory',
           "Sécurisation du réseau : pare-feu, ACL, tests d'intrusion (pentesting)",
+        ],
+        uses: [
+          'vmware',
+          'vpn',
+          'dhcp',
+          'squid',
+          'ssl',
+          'rdp',
+          'active-directory',
+          'firewall',
+          'acl',
+          'pentest',
         ],
       },
     ],
@@ -142,45 +220,49 @@ export const cv: Record<Lang, CvContent> = {
     ],
     skills: {
       'Administration réseau & systèmes': [
-        'VLAN',
-        'DHCP',
-        'DNS',
-        'Routage',
-        'Active Directory',
-        'GPO',
-        'ACL',
-        'Windows Server',
+        { id: 'vlan', label: 'VLAN' },
+        { id: 'dhcp', label: 'DHCP' },
+        { id: 'dns', label: 'DNS' },
+        { id: 'routing', label: 'Routage' },
+        { id: 'active-directory', label: 'Active Directory' },
+        { id: 'gpo', label: 'GPO' },
+        { id: 'acl', label: 'ACL' },
+        { id: 'windows-server', label: 'Windows Server' },
       ],
       Sécurité: [
-        'Pare-feu',
-        'pfSense',
-        'Pentesting',
-        'Tests de sécurité',
-        'DMZ',
-        'Wireshark',
-        'Nmap',
-        'Certificats SSL',
-        'VPN',
+        { id: 'firewall', label: 'Pare-feu' },
+        { id: 'pfsense', label: 'pfSense' },
+        { id: 'pentest', label: 'Pentesting' },
+        { id: 'security-testing', label: 'Tests de sécurité' },
+        { id: 'dmz', label: 'DMZ' },
+        { id: 'wireshark', label: 'Wireshark' },
+        { id: 'nmap', label: 'Nmap' },
+        { id: 'ssl', label: 'Certificats SSL' },
+        { id: 'vpn', label: 'VPN' },
       ],
       'Infrastructure & Web': [
-        'VMware',
-        'Docker',
-        'Linux',
-        'Proxy Squid',
-        'Apache',
-        'NGINX',
-        'MySQL',
-        'RDP',
+        { id: 'vmware', label: 'VMware' },
+        { id: 'docker', label: 'Docker' },
+        { id: 'linux', label: 'Linux' },
+        { id: 'squid', label: 'Proxy Squid' },
+        { id: 'apache', label: 'Apache' },
+        { id: 'nginx', label: 'NGINX' },
+        { id: 'mysql', label: 'MySQL' },
+        { id: 'rdp', label: 'RDP' },
       ],
       Programmation: [
-        'Python',
-        'C/C++',
-        'JavaScript/TypeScript',
-        'React',
-        'Node.js',
-        'Développement Web',
+        { id: 'python', label: 'Python' },
+        { id: 'c-cpp', label: 'C/C++' },
+        { id: 'js-ts', label: 'JavaScript/TypeScript' },
+        { id: 'react', label: 'React' },
+        { id: 'nodejs', label: 'Node.js' },
+        { id: 'web-dev', label: 'Développement Web' },
       ],
-      'Outils & certification': ['GLPI', 'Asterisk (ToIP)', 'MOOC ANSSI – SecNumAcadémie'],
+      'Outils & certification': [
+        { id: 'glpi', label: 'GLPI' },
+        { id: 'asterisk', label: 'Asterisk (ToIP)' },
+        { id: 'anssi-mooc', label: 'MOOC ANSSI – SecNumAcadémie' },
+      ],
     },
     softSkills: ["Travail d'équipe", 'Communication', 'Gestion de projet', 'Autonomie', 'Rigueur'],
     activities: [
@@ -231,6 +313,7 @@ export const cv: Record<Lang, CvContent> = {
     ],
     experiences: [
       {
+        id: 'stage-region-reunion',
         title: 'IT Technical Support & Projects',
         org: 'Réunion Regional Council – Education & School Life Department (South & East e-education sector)',
         type: 'Professional internship',
@@ -240,8 +323,10 @@ export const cv: Record<Lang, CvContent> = {
           'Deployed a VoIP/ToIP solution (Asterisk)',
           'Built skills in GLPI asset inventory, switch configuration, network cabling, and Wi-Fi access point setup',
         ],
+        uses: ['glpi', 'asterisk'],
       },
       {
+        id: 'infra-multisite',
         title: 'Design & Deployment of a Secure Multi-site Network Infrastructure',
         org: 'IUT de La Réunion, BUT RT2',
         type: 'Academic project',
@@ -250,6 +335,18 @@ export const cv: Record<Lang, CvContent> = {
           'Designed and deployed a virtualized network for a multi-site company, including VPN connectivity (VMware)',
           'Configured core network services: IP addressing/DHCP, internal servers, device interconnection, Squid proxy, SSL certificates, RDP, Active Directory',
           'Hardened the network: firewalling, ACLs, penetration testing',
+        ],
+        uses: [
+          'vmware',
+          'vpn',
+          'dhcp',
+          'squid',
+          'ssl',
+          'rdp',
+          'active-directory',
+          'firewall',
+          'acl',
+          'pentest',
         ],
       },
     ],
@@ -267,45 +364,49 @@ export const cv: Record<Lang, CvContent> = {
     ],
     skills: {
       'Network & Systems Administration': [
-        'VLAN',
-        'DHCP',
-        'DNS',
-        'Routing',
-        'Active Directory',
-        'GPO',
-        'ACL',
-        'Windows Server',
+        { id: 'vlan', label: 'VLAN' },
+        { id: 'dhcp', label: 'DHCP' },
+        { id: 'dns', label: 'DNS' },
+        { id: 'routing', label: 'Routing' },
+        { id: 'active-directory', label: 'Active Directory' },
+        { id: 'gpo', label: 'GPO' },
+        { id: 'acl', label: 'ACL' },
+        { id: 'windows-server', label: 'Windows Server' },
       ],
       Security: [
-        'Firewalling',
-        'pfSense',
-        'Penetration Testing',
-        'Security Testing',
-        'DMZ',
-        'Wireshark',
-        'Nmap',
-        'SSL Certificates',
-        'VPN',
+        { id: 'firewall', label: 'Firewalling' },
+        { id: 'pfsense', label: 'pfSense' },
+        { id: 'pentest', label: 'Penetration Testing' },
+        { id: 'security-testing', label: 'Security Testing' },
+        { id: 'dmz', label: 'DMZ' },
+        { id: 'wireshark', label: 'Wireshark' },
+        { id: 'nmap', label: 'Nmap' },
+        { id: 'ssl', label: 'SSL Certificates' },
+        { id: 'vpn', label: 'VPN' },
       ],
       'Infrastructure & Web': [
-        'VMware',
-        'Docker',
-        'Linux',
-        'Squid Proxy',
-        'Apache',
-        'NGINX',
-        'MySQL',
-        'RDP',
+        { id: 'vmware', label: 'VMware' },
+        { id: 'docker', label: 'Docker' },
+        { id: 'linux', label: 'Linux' },
+        { id: 'squid', label: 'Squid Proxy' },
+        { id: 'apache', label: 'Apache' },
+        { id: 'nginx', label: 'NGINX' },
+        { id: 'mysql', label: 'MySQL' },
+        { id: 'rdp', label: 'RDP' },
       ],
       Programming: [
-        'Python',
-        'C/C++',
-        'JavaScript/TypeScript',
-        'React',
-        'Node.js',
-        'Web Development',
+        { id: 'python', label: 'Python' },
+        { id: 'c-cpp', label: 'C/C++' },
+        { id: 'js-ts', label: 'JavaScript/TypeScript' },
+        { id: 'react', label: 'React' },
+        { id: 'nodejs', label: 'Node.js' },
+        { id: 'web-dev', label: 'Web Development' },
       ],
-      'Tools & Certifications': ['GLPI', 'Asterisk (VoIP)', 'ANSSI MOOC – SecNumAcadémie'],
+      'Tools & Certifications': [
+        { id: 'glpi', label: 'GLPI' },
+        { id: 'asterisk', label: 'Asterisk (VoIP)' },
+        { id: 'anssi-mooc', label: 'ANSSI MOOC – SecNumAcadémie' },
+      ],
     },
     softSkills: ['Teamwork', 'Communication', 'Project Management', 'Autonomy', 'Rigor'],
     activities: [
