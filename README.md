@@ -331,8 +331,12 @@ Site statique : `npm run build` produit `dist/`, déployable en l'état.
 **Vercel / Netlify** — build command `npm run build`, output directory `dist`.
 Aucune variable d'environnement, aucune fonction serverless.
 
-Après déploiement, remplacer l'URL `https://mathis-payet.vercel.app/` par le
-domaine réel dans :
+**En ligne : https://mathis-payet-portfolio.vercel.app/** (projet Vercel
+`mathis-payet-portfolio`, compte shiksplay). Redéployer en production :
+`npx vercel deploy --prod` depuis la racine du dépôt.
+
+En cas de changement de domaine, remplacer l'URL actuelle par le nouveau
+domaine dans :
 
 - `index.html` — `<link rel="canonical">`, `og:url`, `og:image`, `twitter:image`
   et le bloc JSON-LD ;
