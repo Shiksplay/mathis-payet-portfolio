@@ -29,18 +29,6 @@
   --animate-breathe: breathe 6s ease-in-out infinite;
   --animate-caret: caret 1.05s steps(1) infinite;
   --animate-drift: drift 18s linear infinite;
-  --animate-marquee: marquee 38s linear infinite;
-
-  @keyframes marquee {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    /* -50 % : la piste contient deux copies de la liste, donc a mi-course elle
-       se retrouve exactement dans son etat de depart. Boucle invisible. */
-    to {
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
 
   @keyframes breathe {
     0%,

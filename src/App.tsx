@@ -1,5 +1,4 @@
 import { domAnimation, LazyMotion } from 'motion/react'
-import { useMemo } from 'react'
 import { BootSequence } from '@/components/boot/BootSequence'
 import { CustomCursor } from '@/components/layout/CustomCursor'
 import { Footer } from '@/components/layout/Footer'
@@ -16,10 +15,8 @@ import { LanguagesInterests } from '@/components/sections/LanguagesInterests'
 import { Profile } from '@/components/sections/Profile'
 import { Projects } from '@/components/sections/Projects'
 import { Skills } from '@/components/sections/Skills'
-import { Marquee } from '@/components/ui/SectionShell'
 import { LangCrossfade } from '@/components/ui/LangCrossfade'
 import { LiquidGlassFilters } from '@/components/ui/LiquidGlassFilters'
-import { useCv } from '@/hooks/useCv'
 import { useDeviceTierSync } from '@/hooks/useDeviceTier'
 import { useReducedMotionSync } from '@/hooks/useReducedMotion'
 import { useScrollSpy } from '@/hooks/useScrollSpy'
@@ -32,18 +29,6 @@ export default function App() {
   useDeviceTierSync()
   useTrackers()
   useScrollSpy()
-
-  const { c } = useCv()
-
-  /**
-   * Mots-cles du bandeau defilant, DERIVES des competences du CV plutot que
-   * ressaisis : impossible qu'ils divergent du contenu reel. On prend les deux
-   * premieres entrees de chaque categorie pour garder une bande courte.
-   */
-  const marqueeItems = useMemo(
-    () => Object.values(c.skills).flatMap((items) => items.slice(0, 2)),
-    [c.skills],
-  )
 
   return (
     // `domAnimation` fournit uniquement les fonctionnalites necessaires
@@ -69,18 +54,9 @@ export default function App() {
           <main>
             <Hero />
             <Profile />
-
-            {/* Bandeaux defilants : respiration rythmique entre deux blocs
-                denses. Les mots-cles sont derives de `cv.skills`, donc ils
-                restent justes si les competences evoluent. */}
-            <Marquee items={marqueeItems} />
-
             <Experience />
             <Projects />
             <Education />
-
-            <Marquee items={marqueeItems} />
-
             <Skills />
             <Activities />
             <LanguagesInterests />
