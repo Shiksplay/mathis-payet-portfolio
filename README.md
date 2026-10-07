@@ -77,7 +77,7 @@ src/
 │  └─ shaders/
 └─ components/
    ├─ boot/           # séquence de boot façon terminal
-   ├─ layout/         # nav, curseur, barre de progression, fallbacks
+   ├─ layout/         # nav, barre de progression, fallbacks
    ├─ sections/       # les 8 sections du CV
    └─ ui/             # SectionShell, TiltCard, Reveal, ScrambleHeading, …
 ```
@@ -243,9 +243,8 @@ commande a besoin du réseau à son premier lancement.
   chaque `<section>`.
 - Lien d'évitement, focus visible partout, navigation clavier complète, menu
   mobile fermable à Échap.
-- Le curseur personnalisé ne remplace le curseur système que sur pointeur fin et
-  hors reduced-motion. Il est composé d'un point qui suit la souris **au pixel
-  près** et d'un anneau amorti : la précision de pointage est préservée.
+- Le curseur système n'est jamais remplacé (l'ancien curseur personnalisé a été
+  retiré : il ne guidait rien et tournait en boucle d'animation permanente).
 
 ### Mesurer Lighthouse
 

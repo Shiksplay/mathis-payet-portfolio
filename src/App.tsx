@@ -1,6 +1,5 @@
 import { domAnimation, LazyMotion } from 'motion/react'
 import { BootSequence } from '@/components/boot/BootSequence'
-import { CustomCursor } from '@/components/layout/CustomCursor'
 import { Footer } from '@/components/layout/Footer'
 import { Nav } from '@/components/layout/Nav'
 import { Scene } from '@/components/layout/Scene'
@@ -45,7 +44,6 @@ export default function App() {
 
       <SkipLink />
       <ScrollProgressBar />
-      <CustomCursor />
       <Nav />
 
       {/* Tout le contenu du CV vit au-dessus du canvas. */}
