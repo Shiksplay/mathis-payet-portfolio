@@ -88,7 +88,7 @@ export function Nav() {
 
         <div className="flex items-center gap-2">
           {/* Navigation desktop */}
-          <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
+          <nav aria-label={t.nav.label}>
             <ul className="hidden items-center gap-7 text-sm md:flex">
               {NAV_SECTIONS.map((section) => (
                 <li key={section.id}>
@@ -143,7 +143,7 @@ export function Nav() {
         <div ref={panelRef} className="px-6 pb-4 md:hidden">
           <nav
             id="mobile-nav"
-            aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}
+            aria-label={t.nav.label}
             className="glass-panel overflow-hidden p-2"
           >
             <ul className="flex flex-col">

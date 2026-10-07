@@ -23,7 +23,7 @@ import { useCv } from '@/hooks/useCv'
  * Le contenu vient du portfolio existant (mathis-p-portfolio.lovable.app).
  */
 export function Projects() {
-  const { c, t, lang } = useCv()
+  const { c, t } = useCv()
 
   return (
     <SectionShell id="projets" index="03" title={t.headings.projects} wide>
@@ -93,11 +93,7 @@ export function Projects() {
         </div>
       </Reveal>
 
-      <span className="sr-only lg:hidden">
-        {lang === 'fr'
-          ? 'Utilisez les flèches gauche et droite pour parcourir les projets.'
-          : 'Use the left and right arrow keys to browse the projects.'}
-      </span>
+      <span className="sr-only lg:hidden">{t.headings.projectsKeyboardHint}</span>
     </SectionShell>
   )
 }

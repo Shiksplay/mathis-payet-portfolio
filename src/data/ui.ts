@@ -9,6 +9,8 @@ import type { ContentSectionId } from './sections'
 export interface UiStrings {
   skipToContent: string
   nav: {
+    /** Nom accessible du <nav> principal. */
+    label: string
     langLabel: string
     switchTo: string
     menu: string
@@ -24,6 +26,8 @@ export interface UiStrings {
     experience: string
     projects: string
     projectsKicker: string
+    /** Consigne clavier (lecteur d'ecran) de la galerie horizontale. */
+    projectsKeyboardHint: string
     education: string
     skills: string
     softSkills: string
@@ -75,6 +79,7 @@ export const ui: Record<Lang, UiStrings> = {
   fr: {
     skipToContent: 'Aller au contenu principal',
     nav: {
+      label: 'Navigation principale',
       langLabel: 'Langue',
       switchTo: 'Passer en anglais',
       menu: 'Ouvrir le menu',
@@ -90,6 +95,7 @@ export const ui: Record<Lang, UiStrings> = {
       experience: 'Expérience & projets',
       projects: 'Projets',
       projectsKicker: 'Faites glisser pour parcourir',
+      projectsKeyboardHint: 'Utilisez les flèches gauche et droite pour parcourir les projets.',
       education: 'Formation',
       skills: 'Compétences',
       softSkills: 'Savoir-être',
@@ -143,6 +149,7 @@ export const ui: Record<Lang, UiStrings> = {
   en: {
     skipToContent: 'Skip to main content',
     nav: {
+      label: 'Main navigation',
       langLabel: 'Language',
       switchTo: 'Switch to French',
       menu: 'Open menu',
@@ -158,6 +165,7 @@ export const ui: Record<Lang, UiStrings> = {
       experience: 'Experience & projects',
       projects: 'Projects',
       projectsKicker: 'Drag to browse',
+      projectsKeyboardHint: 'Use the left and right arrow keys to browse the projects.',
       education: 'Education',
       skills: 'Skills',
       softSkills: 'Soft skills',
