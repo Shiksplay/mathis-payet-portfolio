@@ -340,16 +340,34 @@
   .cs-fill {
     fill: color-mix(in oklab, var(--color-deep) 80%, transparent);
   }
-  /* 12 unites du viewBox : ~9 px a 375 px de large, ~17 px sur desktop.
-     Espacement serre pour que "Pare-feu · ACL" tienne entre les deux sites. */
+  /* Tailles en unites du viewBox (440 de large) : x0,7 a 375 px d'ecran,
+     x1,4 environ sur desktop. Le texte des etapes porte l'information ; les
+     libelles du schema ne servent qu'a reperer les elements. */
   .cs-label {
     fill: var(--color-muted);
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.01em;
   }
+  .cs-label--sm {
+    font-size: 11px;
+  }
+  /* Libelles dans les boites (40 a 72 unites de large). */
+  .cs-label--xs {
+    font-size: 8.5px;
+  }
   .cs-label--strong {
     fill: var(--color-ink);
+  }
+  /* Ce qui n'a pas ete finalise (tunnel IPsec) : couleur secondaire, jamais
+     l'accent, pour ne pas le presenter comme un acquis. */
+  .cs-label--warn {
+    fill: var(--color-iris);
+  }
+  .cs-warn-stroke {
+    fill: none;
+    stroke: color-mix(in oklab, var(--color-iris) 75%, transparent);
+    stroke-width: 1.25;
   }
   /* Calque d'accent : ne s'allume que sur l'etape active. */
   .cs-hl {
@@ -367,33 +385,50 @@
   .cs-node[data-state='active'] .cs-hl {
     opacity: 1;
   }
-  /* Paquet VPN : visible et en mouvement seulement pendant l'etape du VPN,
-     trois traversees puis il s'arrete au bout du tunnel. */
+  /* Paquet dans le tunnel IPsec : il part du siege et s'efface a mi-chemin,
+     trois fois — le tunnel n'a pas ete finalise, le paquet n'arrive pas. */
   .cs-packet {
-    fill: var(--color-accent);
+    fill: var(--color-iris);
     opacity: 0;
   }
   .cs-node[data-state='active'] .cs-packet {
-    opacity: 1;
-    animation: cs-packet 1.4s cubic-bezier(0.45, 0, 0.55, 1) 3 forwards;
+    animation: cs-packet 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 3;
   }
   @keyframes cs-packet {
-    from {
+    0% {
+      opacity: 0;
       transform: translateX(0);
     }
+    15% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(48px);
+    }
+  }
+  /* Schema lineaire (SchematicDiagram) : apparition en cascade au premier
+     passage, une seule fois. */
+  .sch-node {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  [data-inview='true'] .sch-node {
+    animation: sch-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes sch-in {
     to {
-      transform: translateX(76px);
+      opacity: 1;
+      transform: none;
     }
   }
-  /* Sonde du pentest : trois impulsions pendant l'etape active. */
-  .cs-node[data-state='active'] .cs-scan {
-    animation: cs-scan 0.9s ease-in-out 3;
-  }
-  @keyframes cs-scan {
-    50% {
-      opacity: 0.25;
+  @media (prefers-reduced-motion: reduce) {
+    .sch-node {
+      opacity: 1;
+      transform: none;
     }
   }
+
   /* Etapes : celle au centre de l'ecran est pleinement lisible, les autres
      sont attenuees pour guider l'oeil. */
   .cs-step {

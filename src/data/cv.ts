@@ -79,10 +79,53 @@ export interface Experience {
    * Mathis) l'atteste. Une competence sans preuve n'est reliee a rien.
    */
   uses?: SkillId[]
+  /**
+   * Petit schema de principe affiche dans la carte (ex. ToIP du stage).
+   * Simplifie et sans aucune information interne de l'organisation.
+   */
+  schematic?: Schematic
 }
 
-/** Elements du schema de l'etude de cas (voir `CaseStudyDiagram`). */
-export type DiagramNodeId = 'vmware' | 'sites' | 'vpn' | 'services' | 'firewall' | 'pentest'
+/** Schema lineaire "A -> B -> C" (voir `SchematicDiagram`). */
+export interface Schematic {
+  /** Elements de gauche a droite ; `count` > 1 dessine une pile (postes). */
+  nodes: { label: string; count?: number }[]
+  caption: string
+}
+
+/**
+ * Elements du schema de l'etude de cas (voir `CaseStudyDiagram`). Chaque
+ * element apparait a UNE etape.
+ */
+export type DiagramNodeId =
+  | 'hq'
+  | 'zones'
+  | 'fwint'
+  | 'ad'
+  | 'dmz'
+  | 'services'
+  | 'edge'
+  | 'vpn'
+  | 'branch'
+
+/** Libelles du schema (traduits). */
+export type DiagramLabelId =
+  | 'hq'
+  | 'branch'
+  | 'clients'
+  | 'dmz'
+  | 'lan'
+  | 'dns'
+  | 'web'
+  | 'lb'
+  | 'ad'
+  | 'services1'
+  | 'services2'
+  | 'proxy'
+  | 'vpn'
+  | 'vpnStatus'
+  | 'backup'
+  | 'rodc'
 
 export interface CaseStudyStep {
   id: string
@@ -90,23 +133,30 @@ export interface CaseStudyStep {
   body: string
   /** Elements du schema qui apparaissent a cette etape. */
   nodes: DiagramNodeId[]
+  /** Etape realisee personnellement par Mathis (badge "Mon role"). */
+  mine?: boolean
 }
 
 /**
  * Etude de cas animee d'une experience.
  *
- * REGLE : le contenu ne reprend que ce que le CV (ou Mathis) atteste. Tant que
- * la topologie reelle n'est pas fournie, le schema est un SCHEMA DE PRINCIPE
- * (ordre de construction), et sa legende le dit.
+ * REGLE : le contenu ne reprend que ce que Mathis atteste (CV, compte rendu
+ * du projet, reponses). Aucune donnee interne : ni adressage, ni identifiant,
+ * ni nom de domaine, ni nom de co-equipier.
  */
 export interface CaseStudy {
   experienceId: ExperienceId
   title: string
   intro: string
   caption: string
-  /** Libelles affiches dans le schema SVG. */
-  labels: Record<DiagramNodeId | 'site1' | 'site2', string>
+  labels: Record<DiagramLabelId, string>
   steps: CaseStudyStep[]
+  /** Bilan chiffre et enseignements, tires du compte rendu. */
+  outcome?: {
+    stat: string
+    statLabel: string
+    lessons: string[]
+  }
 }
 
 export interface Education {
@@ -222,6 +272,12 @@ export const cv: Record<Lang, CvContent> = {
           "Montée en compétences sur l'inventaire GLPI, la configuration de switchs, le câblage réseau et la configuration de bornes Wi-Fi",
         ],
         uses: ['glpi', 'asterisk'],
+        // Schema simplifie, publie avec l'accord de Mathis, sans information
+        // interne de l'organisation.
+        schematic: {
+          nodes: [{ label: 'Postes IP', count: 3 }, { label: 'Switch' }, { label: 'Serveur Asterisk' }],
+          caption: 'Principe de la solution ToIP mise en place, simplifié et sans information interne.',
+        },
       },
       {
         id: 'infra-multisite',
@@ -234,72 +290,99 @@ export const cv: Record<Lang, CvContent> = {
           'Configuration des services réseau : adressage IP/DHCP, serveurs internes, interconnexion des équipements, proxy Squid, certificats SSL, RDP, Active Directory',
           "Sécurisation du réseau : pare-feu, ACL, tests d'intrusion (pentesting)",
         ],
+        // Puces du CV + compte rendu de la SAE (AD/DNS, DMZ, GPO, serveurs
+        // Debian et Windows Server).
         uses: [
           'vmware',
           'vpn',
           'dhcp',
+          'dns',
           'squid',
           'ssl',
           'rdp',
           'active-directory',
+          'gpo',
+          'windows-server',
+          'linux',
+          'apache',
+          'dmz',
           'firewall',
           'acl',
           'pentest',
         ],
       },
     ],
-    // Contenu repris des puces du CV, sans ajout. A enrichir avec les
-    // reponses de Mathis (topologie reelle, role personnel, difficultes,
-    // resultats).
+    // Source : compte rendu de la SAE (topologie, role, bilan) et reponses
+    // de Mathis. Aucune donnee interne : ni adressage, ni identifiant, ni
+    // nom de domaine, ni nom de co-equipier.
     caseStudy: {
       experienceId: 'infra-multisite',
       title: 'Infrastructure multisite',
       intro:
-        "Projet académique de BUT RT2 (déc. 2025 – mars 2026) : concevoir, déployer puis sécuriser le réseau virtuel d'une entreprise répartie sur plusieurs sites.",
+        "SAÉ de BUT RT2, en équipe de trois : l'infrastructure complète d'une banque fictive répartie sur deux sites, entièrement virtualisée. Mon rôle : l'Active Directory, le DNS et les serveurs de la DMZ.",
       caption:
-        "Schéma de principe établi d'après le CV : il montre l'ordre de construction, pas la topologie exacte.",
+        'Topologie simplifiée du projet. Adressage, identifiants et noms internes volontairement omis.',
       labels: {
-        vmware: 'VMware',
-        sites: 'Sites',
-        site1: 'Site 1',
-        site2: 'Site 2',
-        vpn: 'VPN',
-        services: 'DHCP · AD · Squid · SSL · RDP',
-        firewall: 'Pare-feu · ACL',
-        pentest: 'Pentest',
+        hq: 'Siège · Saint-Denis',
+        branch: 'Saint-Pierre',
+        clients: 'Clients',
+        dmz: 'DMZ',
+        lan: 'Serveurs',
+        dns: 'DNS ×2',
+        web: 'Web ×2',
+        lb: 'HAProxy',
+        ad: 'AD / DNS',
+        services1: 'DHCP · Impr.',
+        services2: 'Zabbix · RDS',
+        proxy: 'Proxy',
+        vpn: 'IPsec',
+        vpnStatus: 'non finalisé',
+        backup: 'secours prévu : 4G/5G · Starlink',
+        rodc: 'RODC',
       },
       steps: [
         {
-          id: 'virtualiser',
-          title: 'Virtualiser',
-          body: "Conception et déploiement d'un réseau virtuel sous VMware pour une entreprise multisite.",
-          nodes: ['vmware', 'sites'],
+          id: 'cloisonner',
+          title: 'Cloisonner',
+          body: "Un pare-feu interne Stormshield au centre et quatre zones séparées : postes clients, serveurs, DMZ et lien vers la succursale. Chaque flux est autorisé explicitement, selon le principe du moindre privilège recommandé par l'ANSSI.",
+          nodes: ['hq', 'zones', 'fwint'],
         },
         {
-          id: 'interconnecter',
-          title: 'Interconnecter les sites',
-          body: 'Liaison des sites par VPN et interconnexion des équipements.',
-          nodes: ['vpn'],
+          id: 'annuaire',
+          title: 'Annuaire et DNS',
+          body: "Contrôleur de domaine Active Directory : unités d'organisation, comptes, partages et GPO appliquée à tous les postes. Le DNS interne redirige les requêtes externes vers le DNS public de la DMZ.",
+          nodes: ['ad'],
+          mine: true,
+        },
+        {
+          id: 'dmz',
+          title: 'DMZ haute disponibilité',
+          body: 'Deux serveurs web Apache derrière HAProxy : répartition alternée, contrôle de santé toutes les 3 s, HTTPS et en-têtes de sécurité. Bascule validée en coupant un serveur. DNS public maître/esclave sous BIND9, zone signée DNSSEC.',
+          nodes: ['dmz'],
+          mine: true,
         },
         {
           id: 'services',
-          title: 'Déployer les services',
-          body: 'Adressage IP et DHCP, serveurs internes, Active Directory, proxy Squid, certificats SSL, accès RDP.',
+          title: 'Services internes',
+          body: "DHCP relayé par le pare-feu vers les postes clients, impression centralisée (CUPS), supervision (Zabbix) et bureau à distance (RDS) pour l'application métier.",
           nodes: ['services'],
         },
         {
-          id: 'securiser',
-          title: 'Sécuriser',
-          body: 'Mise en place du pare-feu et des ACL.',
-          nodes: ['firewall'],
-        },
-        {
-          id: 'tester',
-          title: "Tester l'intrusion",
-          body: "Tests d'intrusion (pentesting) sur l'infrastructure sécurisée.",
-          nodes: ['pentest'],
+          id: 'succursale',
+          title: 'Relier la succursale',
+          body: "Contrôleur de domaine en lecture seule (RODC) installé à Saint-Pierre. Le tunnel IPsec, le pare-feu de bordure et le proxy n'étaient pas finalisés à la fin du projet. Des liaisons de secours 4G/5G et Starlink étaient prévues.",
+          nodes: ['edge', 'vpn', 'branch'],
         },
       ],
+      outcome: {
+        stat: '14 / 17',
+        statLabel: 'composants validés en fin de projet',
+        lessons: [
+          "Sur un pare-feu, une erreur d'objet réseau ou d'ordre des règles suffit à bloquer un flux entier : nous l'avons constaté en déboguant les règles ICMP et DHCP.",
+          "L'ordre de mise en place compte : DNS, puis Active Directory, puis postes clients. Un écart provoque des pannes en cascade, difficiles à diagnostiquer.",
+          "La virtualisation a ses propres pièges : l'affectation des interfaces réseau aux pare-feux virtuels a demandé plusieurs heures de diagnostic.",
+        ],
+      },
     },
     education: [
       {
@@ -419,6 +502,10 @@ export const cv: Record<Lang, CvContent> = {
           'Built skills in GLPI asset inventory, switch configuration, network cabling, and Wi-Fi access point setup',
         ],
         uses: ['glpi', 'asterisk'],
+        schematic: {
+          nodes: [{ label: 'IP phones', count: 3 }, { label: 'Switch' }, { label: 'Asterisk server' }],
+          caption: 'How the VoIP solution was set up, simplified and without any internal information.',
+        },
       },
       {
         id: 'infra-multisite',
@@ -431,14 +518,22 @@ export const cv: Record<Lang, CvContent> = {
           'Configured core network services: IP addressing/DHCP, internal servers, device interconnection, Squid proxy, SSL certificates, RDP, Active Directory',
           'Hardened the network: firewalling, ACLs, penetration testing',
         ],
+        // Puces du CV + compte rendu de la SAE (AD/DNS, DMZ, GPO, serveurs
+        // Debian et Windows Server).
         uses: [
           'vmware',
           'vpn',
           'dhcp',
+          'dns',
           'squid',
           'ssl',
           'rdp',
           'active-directory',
+          'gpo',
+          'windows-server',
+          'linux',
+          'apache',
+          'dmz',
           'firewall',
           'acl',
           'pentest',
@@ -449,51 +544,70 @@ export const cv: Record<Lang, CvContent> = {
       experienceId: 'infra-multisite',
       title: 'Multi-site infrastructure',
       intro:
-        'BUT RT2 academic project (Dec. 2025 – Mar. 2026): design, deploy, then secure the virtualized network of a company spread across several sites.',
+        'BUT RT2 team project (three people): the full infrastructure of a fictional bank spread across two sites, entirely virtualized. My part: Active Directory, DNS and the DMZ servers.',
       caption:
-        'Conceptual diagram based on the resume: it shows the build order, not the exact topology.',
+        'Simplified project topology. Addressing, credentials and internal names deliberately left out.',
       labels: {
-        vmware: 'VMware',
-        sites: 'Sites',
-        site1: 'Site 1',
-        site2: 'Site 2',
-        vpn: 'VPN',
-        services: 'DHCP · AD · Squid · SSL · RDP',
-        firewall: 'Firewall · ACL',
-        pentest: 'Pentest',
+        hq: 'HQ · Saint-Denis',
+        branch: 'Saint-Pierre',
+        clients: 'Clients',
+        dmz: 'DMZ',
+        lan: 'Servers',
+        dns: 'DNS ×2',
+        web: 'Web ×2',
+        lb: 'HAProxy',
+        ad: 'AD / DNS',
+        services1: 'DHCP · Print',
+        services2: 'Zabbix · RDS',
+        proxy: 'Proxy',
+        vpn: 'IPsec',
+        vpnStatus: 'not finished',
+        backup: 'planned backup: 4G/5G · Starlink',
+        rodc: 'RODC',
       },
       steps: [
         {
-          id: 'virtualiser',
-          title: 'Virtualize',
-          body: 'Designed and deployed a virtualized network in VMware for a multi-site company.',
-          nodes: ['vmware', 'sites'],
+          id: 'cloisonner',
+          title: 'Segment',
+          body: 'A Stormshield internal firewall at the center and four separate zones: client workstations, servers, DMZ and the link to the branch. Every flow is explicitly allowed, following the least-privilege principle recommended by ANSSI.',
+          nodes: ['hq', 'zones', 'fwint'],
         },
         {
-          id: 'interconnecter',
-          title: 'Connect the sites',
-          body: 'Linked the sites over VPN and interconnected the devices.',
-          nodes: ['vpn'],
+          id: 'annuaire',
+          title: 'Directory and DNS',
+          body: 'Active Directory domain controller: organizational units, accounts, shares and a GPO applied to every workstation. Internal DNS forwards external queries to the public DNS in the DMZ.',
+          nodes: ['ad'],
+          mine: true,
+        },
+        {
+          id: 'dmz',
+          title: 'High-availability DMZ',
+          body: 'Two Apache web servers behind HAProxy: round-robin, health check every 3 s, HTTPS and security headers. Failover validated by shutting one server down. Public master/slave DNS on BIND9, zone signed with DNSSEC.',
+          nodes: ['dmz'],
+          mine: true,
         },
         {
           id: 'services',
-          title: 'Deploy the services',
-          body: 'IP addressing and DHCP, internal servers, Active Directory, Squid proxy, SSL certificates, RDP access.',
+          title: 'Internal services',
+          body: 'DHCP relayed by the firewall to client workstations, centralized printing (CUPS), monitoring (Zabbix) and remote desktop (RDS) for the business application.',
           nodes: ['services'],
         },
         {
-          id: 'securiser',
-          title: 'Harden',
-          body: 'Set up the firewall and ACLs.',
-          nodes: ['firewall'],
-        },
-        {
-          id: 'tester',
-          title: 'Test for intrusion',
-          body: 'Penetration testing of the hardened infrastructure.',
-          nodes: ['pentest'],
+          id: 'succursale',
+          title: 'Connect the branch',
+          body: 'Read-only domain controller (RODC) installed in Saint-Pierre. The IPsec tunnel, the edge firewall and the proxy were not finished by the end of the project. 4G/5G and Starlink backup links were planned.',
+          nodes: ['edge', 'vpn', 'branch'],
         },
       ],
+      outcome: {
+        stat: '14 / 17',
+        statLabel: 'components validated by the end of the project',
+        lessons: [
+          'On a firewall, one wrong network object or rule order is enough to block an entire flow: we hit this while debugging the ICMP and DHCP rules.',
+          'Order matters: DNS, then Active Directory, then client workstations. Any deviation causes cascading failures that are hard to diagnose.',
+          'Virtualization has its own traps: mapping network interfaces to the virtual firewalls took hours of troubleshooting.',
+        ],
+      },
     },
     education: [
       {

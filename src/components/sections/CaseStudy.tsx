@@ -1,12 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DiagramNodeId } from '@/data/cv'
 import { CaseStudyDiagram, type NodeState } from '@/components/case-study/CaseStudyDiagram'
+import { Reveal } from '@/components/ui/Reveal'
 import { SectionShell } from '@/components/ui/SectionShell'
 import { useCv } from '@/hooks/useCv'
 import { cn } from '@/lib/cn'
 import { useAppStore } from '@/store/useAppStore'
 
-const NODE_IDS: readonly DiagramNodeId[] = ['vmware', 'sites', 'vpn', 'services', 'firewall', 'pentest']
+const NODE_IDS: readonly DiagramNodeId[] = [
+  'hq',
+  'zones',
+  'fwint',
+  'ad',
+  'dmz',
+  'services',
+  'edge',
+  'vpn',
+  'branch',
+]
 
 /**
  * Ligne de lecture, en px depuis le haut du viewport : l'etape qui la croise
@@ -225,10 +236,18 @@ export function CaseStudy() {
                 className="cs-step w-full rounded-2xl border border-hairline/60 bg-abyss/70 p-5 backdrop-blur-sm sm:p-6"
                 data-active={reducedMotion || i === active}
               >
-                <p className="label-mono text-accent/80">
-                  {t.caseStudy.step} {String(i + 1).padStart(2, '0')}
-                  <span className="text-muted/60"> / {String(total).padStart(2, '0')}</span>
-                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="label-mono text-accent/80">
+                    {t.caseStudy.step} {String(i + 1).padStart(2, '0')}
+                    <span className="text-muted/60"> / {String(total).padStart(2, '0')}</span>
+                  </p>
+                  {/* Distingue le travail personnel du travail d'equipe. */}
+                  {step.mine ? (
+                    <span className="rounded-full border border-accent/50 bg-accent/10 px-2.5 py-0.5 font-mono text-[10px] tracking-[0.14em] text-accent uppercase">
+                      {t.caseStudy.mine}
+                    </span>
+                  ) : null}
+                </div>
                 <h3 className="mt-3 font-display text-2xl leading-tight font-semibold text-ink sm:text-3xl">
                   {step.title}
                 </h3>
@@ -238,6 +257,32 @@ export function CaseStudy() {
           ))}
         </ol>
       </div>
+
+      {/* ---------- Bilan (compte rendu du projet) ---------- */}
+      {cs.outcome ? (
+        <Reveal>
+          <div className="mt-16 grid gap-8 rounded-2xl border border-hairline/60 bg-abyss/70 p-6 backdrop-blur-sm sm:p-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] lg:gap-12">
+            <div>
+              <h3 className="label-mono text-accent/80">{t.caseStudy.outcome}</h3>
+              <p className="mt-3 font-display text-5xl leading-none font-semibold text-ink">
+                {cs.outcome.stat}
+              </p>
+              <p className="mt-2 text-sm text-muted">{cs.outcome.statLabel}</p>
+            </div>
+            <div>
+              <h3 className="label-mono text-accent/80">{t.caseStudy.lessons}</h3>
+              <ul className="mt-4 space-y-3">
+                {cs.outcome.lessons.map((lesson) => (
+                  <li key={lesson} className="flex gap-3.5 text-[15px] leading-relaxed text-ink/80">
+                    <span aria-hidden="true" className="mt-[9px] size-1 shrink-0 rounded-full bg-accent/70" />
+                    <span>{lesson}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Reveal>
+      ) : null}
     </SectionShell>
   )
 }

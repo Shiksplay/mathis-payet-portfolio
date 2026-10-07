@@ -14,100 +14,168 @@ interface Props {
   states: Record<DiagramNodeId, NodeState>
 }
 
+interface BoxProps {
+  x: number
+  y: number
+  w: number
+  h: number
+  r?: number
+  dashed?: boolean
+}
+
+/** Cadre de base + son calque d'accent (allume sur l'etape active). */
+function Box({ x, y, w, h, r = 6, dashed = false }: BoxProps) {
+  const dash = dashed ? '4 6' : undefined
+  return (
+    <>
+      <rect x={x} y={y} width={w} height={h} rx={r} className="cs-stroke cs-fill" strokeDasharray={dash} />
+      <rect x={x} y={y} width={w} height={h} rx={r} className="cs-hl cs-hl-stroke" strokeDasharray={dash} />
+    </>
+  )
+}
+
+/** Pare-feu : un "mur" de briques. */
+function Wall({ x, y }: { x: number; y: number }) {
+  return (
+    <>
+      <rect x={x} y={y} width="10" height="34" rx="2" className="cs-stroke cs-fill" />
+      <rect x={x} y={y} width="10" height="34" rx="2" className="cs-hl cs-hl-fill" />
+      <path
+        d={`M${x} ${y + 11}h10M${x} ${y + 23}h10M${x + 5} ${y}v11M${x + 5} ${y + 23}v11`}
+        className="cs-stroke"
+      />
+      <text x={x + 5} y={y + 48} textAnchor="middle" className="cs-label cs-label--xs">
+        FW
+      </text>
+    </>
+  )
+}
+
 /**
- * SCHEMA DE PRINCIPE DE L'INFRASTRUCTURE
- * ======================================
+ * TOPOLOGIE SIMPLIFIEE DU PROJET
+ * ==============================
  *
- * SVG pur, decoratif (`aria-hidden`) : l'information equivalente est la liste
- * ordonnee des etapes, lue normalement par les lecteurs d'ecran.
+ * Reprise du schema d'architecture de Mathis, simplifiee : siege (clients,
+ * pare-feu interne, DMZ, LAN serveurs, proxy, pare-feu de bordure), tunnel
+ * IPsec, succursale (RODC). Aucune adresse, aucun identifiant.
  *
- * Chaque element est un <g data-node data-state> ; tout le rendu d'etat vit en
- * CSS (`index.css`, bloc "ETUDE DE CAS") et n'anime que `opacity` et
- * `transform`. Les traits de base sont en `muted`, les calques `.cs-hl` en
- * accent ne s'allument que sur l'etape active.
+ * SVG decoratif (`aria-hidden`) : l'equivalent textuel est la liste ordonnee
+ * des etapes. Chaque <g data-node data-state> est pilote en CSS (`index.css`,
+ * bloc "ETUDE DE CAS"), qui n'anime que `opacity` et `transform`.
+ *
+ * Le tunnel IPsec n'a pas ete finalise pendant le projet : il est dessine en
+ * pointilles, en couleur secondaire, et son paquet s'efface a mi-chemin au
+ * lieu de traverser. Le schema ne pretend pas a plus que le compte rendu.
  */
 export function CaseStudyDiagram({ labels, states }: Props) {
   return (
-    <svg viewBox="0 0 420 260" className="h-auto w-full" aria-hidden="true" focusable="false">
-      {/* 1. Hyperviseur : cadre qui contient tout le reseau virtuel. */}
-      <g className="cs-node" data-node="vmware" data-state={states.vmware}>
-        <rect x="6" y="6" width="408" height="248" rx="14" className="cs-stroke" strokeDasharray="4 6" />
-        <rect x="6" y="6" width="408" height="248" rx="14" className="cs-hl cs-hl-stroke" strokeDasharray="4 6" />
-        <text x="20" y="26" className="cs-label">
-          {labels.vmware}
+    <svg viewBox="0 0 440 300" className="h-auto w-full" aria-hidden="true" focusable="false">
+      {/* ---------- Siege ---------- */}
+      <g className="cs-node" data-node="hq" data-state={states.hq}>
+        <Box x={4} y={4} w={248} h={292} r={14} dashed />
+        <text x="14" y="19" className="cs-label cs-label--sm">
+          {labels.hq}
         </text>
       </g>
 
-      {/* 1bis. Les sites (deux, le minimum de "multisite"). */}
-      <g className="cs-node" data-node="sites" data-state={states.sites}>
-        {[30, 262].map((x, i) => (
-          <g key={x}>
-            <rect x={x} y="56" width="128" height="104" rx="10" className="cs-stroke cs-fill" />
-            <rect x={x} y="56" width="128" height="104" rx="10" className="cs-hl cs-hl-stroke" />
-            <text x={x + 14} y="76" className="cs-label">
-              {i === 0 ? labels.site1 : labels.site2}
-            </text>
-            {/* Postes generiques du LAN. */}
-            {[0, 1, 2].map((k) => (
-              <rect
-                key={k}
-                x={x + 16 + k * 34}
-                y="118"
-                width="22"
-                height="16"
-                rx="3"
-                className="cs-stroke"
-              />
-            ))}
-          </g>
+      {/* Zones cloisonnees : clients, DMZ, serveurs. */}
+      <g className="cs-node" data-node="zones" data-state={states.zones}>
+        <Box x={12} y={112} w={64} h={86} r={8} />
+        <text x="20" y="128" className="cs-label cs-label--sm">
+          {labels.clients}
+        </text>
+        {[20, 38, 56].map((x) => (
+          <rect key={x} x={x} y="158" width="12" height="10" rx="2" className="cs-stroke" />
         ))}
+
+        <Box x={104} y={24} w={144} h={76} r={8} />
+        <text x="112" y="40" className="cs-label cs-label--sm">
+          {labels.dmz}
+        </text>
+
+        <Box x={104} y={204} w={144} h={84} r={8} />
+        <text x="112" y="220" className="cs-label cs-label--sm">
+          {labels.lan}
+        </text>
       </g>
 
-      {/* 2. Tunnel VPN entre les sites, avec un paquet qui le traverse. */}
+      {/* Pare-feu interne, au centre, relie aux trois zones. */}
+      <g className="cs-node" data-node="fwint" data-state={states.fwint}>
+        <path d="M76 150H84M89 122V62H104M89 156V246H104" className="cs-stroke" />
+        <Wall x={84} y={122} />
+      </g>
+
+      {/* Active Directory / DNS interne (role de Mathis). */}
+      <g className="cs-node" data-node="ad" data-state={states.ad}>
+        <Box x={112} y={232} w={52} h={44} />
+        <text x="138" y="258" textAnchor="middle" className="cs-label cs-label--xs cs-label--strong">
+          {labels.ad}
+        </text>
+      </g>
+
+      {/* DMZ : DNS publics, serveurs web, repartiteur (role de Mathis). */}
+      <g className="cs-node" data-node="dmz" data-state={states.dmz}>
+        <Box x={110} y={52} w={40} h={36} />
+        <text x="130" y="74" textAnchor="middle" className="cs-label cs-label--xs cs-label--strong">
+          {labels.dns}
+        </text>
+        <Box x={154} y={52} w={40} h={36} />
+        <text x="174" y="74" textAnchor="middle" className="cs-label cs-label--xs cs-label--strong">
+          {labels.web}
+        </text>
+        <Box x={198} y={52} w={44} h={36} />
+        <text x="220" y="74" textAnchor="middle" className="cs-label cs-label--xs cs-label--strong">
+          {labels.lb}
+        </text>
+      </g>
+
+      {/* Services internes du LAN serveurs. */}
+      <g className="cs-node" data-node="services" data-state={states.services}>
+        <Box x={170} y={232} w={72} h={44} />
+        <text x="206" y="251" textAnchor="middle" className="cs-label cs-label--xs">
+          {labels.services1}
+        </text>
+        <text x="206" y="266" textAnchor="middle" className="cs-label cs-label--xs">
+          {labels.services2}
+        </text>
+      </g>
+
+      {/* Sortie du siege : proxy puis pare-feu de bordure. */}
+      <g className="cs-node" data-node="edge" data-state={states.edge}>
+        <path d="M94 139H118M162 139H226M236 139H252" className="cs-stroke" />
+        <Box x={118} y={127} w={44} h={24} />
+        <text x="140" y="143" textAnchor="middle" className="cs-label cs-label--xs">
+          {labels.proxy}
+        </text>
+        <Wall x={226} y={122} />
+      </g>
+
+      {/* Tunnel IPsec : non finalise pendant le projet. */}
       <g className="cs-node" data-node="vpn" data-state={states.vpn}>
-        <line x1="166" y1="102" x2="254" y2="102" className="cs-stroke" />
-        <line x1="166" y1="114" x2="254" y2="114" className="cs-stroke" />
-        <line x1="166" y1="102" x2="254" y2="102" className="cs-hl cs-hl-stroke" />
-        <line x1="166" y1="114" x2="254" y2="114" className="cs-hl cs-hl-stroke" />
-        <text x="210" y="94" textAnchor="middle" className="cs-label">
+        <path d="M252 133H344M252 145H344" className="cs-warn-stroke" strokeDasharray="5 4" />
+        <text x="298" y="124" textAnchor="middle" className="cs-label cs-label--sm">
           {labels.vpn}
         </text>
-        <circle cx="172" cy="108" r="3.5" className="cs-packet" />
-      </g>
-
-      {/* 3. Services internes, partages par les sites. */}
-      <g className="cs-node" data-node="services" data-state={states.services}>
-        <path d="M150 196 L94 160 M270 196 L326 160" className="cs-stroke" strokeDasharray="3 4" />
-        <rect x="96" y="196" width="228" height="40" rx="8" className="cs-stroke cs-fill" />
-        <rect x="96" y="196" width="228" height="40" rx="8" className="cs-hl cs-hl-stroke" />
-        <text x="210" y="220" textAnchor="middle" className="cs-label cs-label--strong">
-          {labels.services}
+        <text x="298" y="162" textAnchor="middle" className="cs-label cs-label--xs cs-label--warn">
+          {labels.vpnStatus}
+        </text>
+        <circle cx="258" cy="139" r="3.5" className="cs-packet" />
+        <text x="351" y="286" textAnchor="middle" className="cs-label cs-label--xs">
+          {labels.backup}
         </text>
       </g>
 
-      {/* 4. Filtrage en bordure de chaque site. */}
-      <g className="cs-node" data-node="firewall" data-state={states.firewall}>
-        {[154, 256].map((x) => (
-          <g key={x}>
-            <rect x={x} y="92" width="10" height="32" rx="2" className="cs-stroke cs-fill" />
-            <rect x={x} y="92" width="10" height="32" rx="2" className="cs-hl cs-hl-fill" />
-            <path d={`M${x} 102.5h10M${x} 113h10M${x + 5} 92v10.5M${x + 5} 113v11`} className="cs-stroke" />
-          </g>
-        ))}
-        {/* Sous les sites (et non entre eux) : le libelle n'y touche aucun cadre. */}
-        <text x="210" y="182" textAnchor="middle" className="cs-label">
-          {labels.firewall}
+      {/* Succursale : pare-feu + controleur en lecture seule. */}
+      <g className="cs-node" data-node="branch" data-state={states.branch}>
+        <Box x={336} y={86} w={98} h={112} r={10} />
+        <text x="344" y="102" className="cs-label cs-label--sm">
+          {labels.branch}
         </text>
-      </g>
-
-      {/* 5. Test d'intrusion : sonde exterieure qui vise les points d'entree. */}
-      <g className="cs-node" data-node="pentest" data-state={states.pentest}>
-        <path d="M210 46 L159 92 M210 46 L261 92" className="cs-stroke cs-scan" strokeDasharray="2 4" />
-        <circle cx="210" cy="36" r="10" className="cs-stroke cs-fill" />
-        <circle cx="210" cy="36" r="10" className="cs-hl cs-hl-stroke" />
-        <path d="M210 22v7M210 43v7M196 36h7M217 36h7" className="cs-stroke" />
-        <text x="228" y="40" className="cs-label">
-          {labels.pentest}
+        <path d="M354 139H364" className="cs-stroke" />
+        <Wall x={344} y={122} />
+        <Box x={364} y={127} w={62} h={24} />
+        <text x="395" y="143" textAnchor="middle" className="cs-label cs-label--xs cs-label--strong">
+          {labels.rodc}
         </text>
       </g>
     </svg>

@@ -52,6 +52,10 @@ export interface UiStrings {
     stepsNav: string
     /** Lien depuis la carte d'experience. */
     seeCase: string
+    /** Badge des etapes realisees personnellement. */
+    mine: string
+    outcome: string
+    lessons: string
   }
   /** Relation competences <-> experiences ("ou est-ce prouve ?"). */
   proofs: {
@@ -131,6 +135,9 @@ export const ui: Record<Lang, UiStrings> = {
       step: 'Étape',
       stepsNav: 'Étapes du projet',
       seeCase: "Voir l'étude de cas",
+      mine: 'Mon rôle',
+      outcome: 'Bilan',
+      lessons: "Ce que j'en retiens",
     },
     proofs: {
       legend:
@@ -207,6 +214,9 @@ export const ui: Record<Lang, UiStrings> = {
       step: 'Step',
       stepsNav: 'Project steps',
       seeCase: 'See the case study',
+      mine: 'My part',
+      outcome: 'Outcome',
+      lessons: 'What I took away',
     },
     proofs: {
       legend:

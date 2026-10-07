@@ -126,10 +126,17 @@ est la « ligne de lecture » choisit l'étape active (centre de l'écran en deu
 colonnes, centre de la zone visible sous le schéma en une colonne). Pas de
 GSAP. En reduced-motion : pas de sticky, schéma complet, étapes toutes lisibles.
 
-**Le contenu actuel ne reprend que les puces du CV** et le schéma est un
-schéma de *principe* (sa légende le dit). Pour le remplacer par la topologie
-réelle : ajuster `CaseStudyDiagram.tsx` et les `labels` / `steps` de
-`cv.caseStudy`, dans les deux langues.
+Le contenu vient du compte rendu de la SAE et des réponses de Mathis :
+topologie simplifiée (siège, DMZ, LAN serveurs, tunnel IPsec, succursale),
+étapes réalisées personnellement marquées `mine` (badge « Mon rôle »), bilan
+chiffré et enseignements (`outcome`). Ce qui n'a pas été finalisé (tunnel
+IPsec, pare-feu de bordure, proxy) est dit comme tel et dessiné en couleur
+secondaire, jamais en accent. **Aucune donnée interne** : ni adressage, ni
+identifiant, ni nom de domaine du labo, ni nom de co-équipier.
+
+`Experience.schematic` (optionnel) affiche un petit schéma linéaire dans une
+carte d'expérience (`components/case-study/SchematicDiagram.tsx`) : utilisé
+pour la ToIP du stage, simplifié et sans information interne.
 
 Insérer une section dans la page implique : une entrée dans `SECTIONS`
 (`data/sections.ts`), dans `ContentSectionId`, dans `ui.cvBridge.rubrics`

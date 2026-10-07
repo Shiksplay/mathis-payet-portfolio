@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { useMemo } from 'react'
+import { SchematicDiagram } from '@/components/case-study/SchematicDiagram'
 import { Reveal } from '@/components/ui/Reveal'
 import { SectionShell } from '@/components/ui/SectionShell'
 import { TiltCard } from '@/components/ui/TiltCard'
@@ -52,6 +53,8 @@ export function Experience() {
                     </li>
                   ))}
                 </ul>
+
+                {xp.schematic ? <SchematicDiagram schematic={xp.schematic} /> : null}
 
                 {/* Lien vers l'etude de cas detaillee de cette experience. */}
                 {c.caseStudy.experienceId === xp.id ? (
