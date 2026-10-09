@@ -54,12 +54,28 @@ function detectTier(reducedMotion: boolean): Tier {
 /**
  * Determine le tier au montage et le reevalue si les preferences d'animation
  * changent. A monter une seule fois, au niveau de <App />.
+ *
+ * POURQUOI LA PREFERENCE EST RELUE ICI, ET PAS SEULEMENT PRISE DANS LE STORE
+ * --------------------------------------------------------------------------
+ * `useReducedMotionSync` et ce hook sont deux effets distincts, montes dans le
+ * meme passage. Au premier rendu, le store contient encore `reducedMotion:
+ * false` : l'ecriture faite par le premier effet n'est visible qu'au rendu
+ * SUIVANT. Cet effet-ci calculait donc un tier 'high' avant de se corriger,
+ * <Scene /> montait <SceneCanvas /> le temps d'une frame, et les ~264 kB de
+ * three.js partaient sur le reseau — precisement chez les visiteurs qui
+ * n'afficheront jamais la 3D.
+ *
+ * Relire la media query directement coute un appel synchrone au montage et
+ * supprime entierement cet aller-retour : le tier vaut 'none' des le premier
+ * calcul, l'import dynamique n'est jamais declenche.
  */
 export function useDeviceTierSync(): void {
   const reducedMotion = useAppStore((s) => s.reducedMotion)
   const setTier = useAppStore((s) => s.setTier)
 
   useEffect(() => {
-    setTier(detectTier(reducedMotion))
+    const prefersReduced =
+      reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    setTier(detectTier(prefersReduced))
   }, [reducedMotion, setTier])
 }
