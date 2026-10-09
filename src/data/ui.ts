@@ -34,6 +34,15 @@ export interface UiStrings {
     interests: string
     contact: string
   }
+  /** Libelles de la galerie de projets. */
+  projects: {
+    /** Intitules des blocs deplies d'une carte detaillee. */
+    skills: string
+    outcome: string
+    reflection: string
+    /** Badge d'etat, affiche uniquement quand status === 'ongoing'. */
+    ongoing: string
+  }
   contact: {
     intro: string
     emailLabel: string
@@ -79,7 +88,7 @@ export const ui: Record<Lang, UiStrings> = {
       profile: 'Profil',
       experience: 'Expérience & projets',
       projects: 'Projets',
-      projectsKicker: 'Faites glisser pour parcourir',
+      projectsKicker: 'Sélection de travaux — réseau, sécurité, systèmes',
       education: 'Formation',
       skills: 'Compétences',
       softSkills: 'Savoir-être',
@@ -87,6 +96,12 @@ export const ui: Record<Lang, UiStrings> = {
       languages: 'Langues',
       interests: "Centres d'intérêt",
       contact: 'Contact',
+    },
+    projects: {
+      skills: 'Compétences mises en œuvre',
+      outcome: 'Bilan',
+      reflection: 'Ressenti',
+      ongoing: 'En cours',
     },
     contact: {
       intro: 'Une alternance, une question, un échange — je réponds rapidement.',
@@ -137,7 +152,7 @@ export const ui: Record<Lang, UiStrings> = {
       profile: 'Profile',
       experience: 'Experience & projects',
       projects: 'Projects',
-      projectsKicker: 'Drag to browse',
+      projectsKicker: 'Selected work — networking, security, systems',
       education: 'Education',
       skills: 'Skills',
       softSkills: 'Soft skills',
@@ -145,6 +160,12 @@ export const ui: Record<Lang, UiStrings> = {
       languages: 'Languages',
       interests: 'Interests',
       contact: 'Contact',
+    },
+    projects: {
+      skills: 'Skills applied',
+      outcome: 'Outcome',
+      reflection: 'Reflection',
+      ongoing: 'Ongoing',
     },
     contact: {
       intro: 'A work-study offer, a question, a conversation — I reply quickly.',

@@ -13,6 +13,12 @@ interface RevealProps {
   delay?: number
   /** Distance de translation initiale, en px. */
   y?: number
+  /**
+   * Duree en secondes. Le defaut (0.7) est la respiration des grands blocs de
+   * la page ; une cascade d'elements veut nettement plus court, sinon les
+   * derniers arrivent trop tard apres le regard.
+   */
+  duration?: number
   className?: string
 }
 
@@ -22,7 +28,7 @@ interface RevealProps {
  * animation ni opacite initiale (jamais de contenu invisible pour cause
  * d'animation desactivee).
  */
-export function Reveal({ children, delay = 0, y = 24, className }: RevealProps) {
+export function Reveal({ children, delay = 0, y = 24, duration = 0.7, className }: RevealProps) {
   const reducedMotion = useAppStore((s) => s.reducedMotion)
 
   if (reducedMotion) {
@@ -35,7 +41,7 @@ export function Reveal({ children, delay = 0, y = 24, className }: RevealProps) 
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.7, delay, ease: [0.2, 0.8, 0.2, 1] }}
+      transition={{ duration, delay, ease: [0.2, 0.8, 0.2, 1] }}
     >
       {children}
     </m.div>
