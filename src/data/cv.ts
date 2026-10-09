@@ -38,16 +38,35 @@ export interface LanguageSkill {
 /**
  * Projet personnel ou academique.
  *
- * Contenu repris du portfolio existant (mathis-p-portfolio.lovable.app) :
- * rien n'est invente ici non plus.
+ * Contenu tire des documents reels de Mathis (rapport de stage, rapport
+ * d'audit, portfolio existant) : rien n'est invente ici non plus. Les rares
+ * formulations proposees plutot que citees sont signalees par un commentaire
+ * `RESSENTI — proposition a valider` a l'endroit exact ou elles apparaissent.
+ *
+ * LES CHAMPS DETAILLES SONT OPTIONNELS, ET C'EST VOLONTAIRE : la galerie
+ * deplie une carte complete quand ils sont renseignes, et retombe sur la carte
+ * compacte quand ils ne le sont pas. Un projet peut donc etre ajoute en trois
+ * lignes sans casser la section, et enrichi plus tard.
  */
 export interface Project {
+  /** Numero de reference du projet dans la galerie ("01", "02"...). */
+  index: string
   title: string
   desc: string
   /** Etiquettes courtes affichees sous la carte. */
   tags: string[]
-  /** Numero de reference du projet dans la galerie ("01", "02"...). */
-  index: string
+  /** Projet termine ou en cours — pilote le badge d'etat dans la galerie. */
+  status?: 'completed' | 'ongoing'
+  /** Periode affichee sur la carte (ex. "Avril – Juin 2026"). */
+  period?: string
+  /** Une phrase qui situe le projet (cadre, commanditaire). */
+  context?: string
+  /** Competences reellement mises en oeuvre. */
+  skills?: string[]
+  /** Bilan : resultats concrets et livrables. */
+  outcome?: string
+  /** Ressenti personnel, a la premiere personne. */
+  reflection?: string
 }
 
 export interface CvContent {
