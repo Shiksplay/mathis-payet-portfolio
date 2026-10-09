@@ -1,9 +1,10 @@
 import { useFrame } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
-import { AdditiveBlending, Color, type ShaderMaterial } from 'three'
+import { useEffect, useMemo, useRef } from 'react'
+import { AdditiveBlending, NormalBlending, type ShaderMaterial } from 'three'
+import { useAppStore } from '@/store/useAppStore'
+import { SCENE_PALETTE } from './palette'
 import { flowFragmentShader, flowVertexShader } from './shaders/flow'
-
-const FLOW_COLOR = new Color('#7fd6ff') // cyan desature : ambiance, pas accent
+import { setColorUniform, setUniform } from './uniforms'
 
 interface FlowParticlesProps {
   count: number
@@ -33,6 +34,7 @@ function mulberry32(seed: number): () => number {
  */
 export function FlowParticles({ count, radius = 4.2, intensity = 1 }: FlowParticlesProps) {
   const matRef = useRef<ShaderMaterial>(null)
+  const theme = useAppStore((s) => s.theme)
 
   const geometry = useMemo(() => {
     const rand = mulberry32(4242)
@@ -63,18 +65,26 @@ export function FlowParticles({ count, radius = 4.2, intensity = 1 }: FlowPartic
     return { positions, seeds, scales }
   }, [count, radius])
 
-  const uniforms = useMemo(
-    () => ({
+  const uniforms = useMemo(() => {
+    // Lecture NON REACTIVE du store : voir GradientField.
+    const { core, opacity } = SCENE_PALETTE[useAppStore.getState().theme]
+    return {
       uTime: { value: 0 },
       uSize: { value: 42 },
       uMaxSize: { value: 9 },
       uPixelRatio: { value: 1 },
       uSwirl: { value: 1 },
-      uColor: { value: FLOW_COLOR },
-      uOpacity: { value: 0.5 * intensity },
-    }),
-    [intensity],
-  )
+      uColor: { value: core.flow.clone() },
+      uOpacity: { value: opacity.flow * intensity },
+    }
+  }, [intensity])
+
+  // Bascule de theme : ecriture dans le materiau, pas dans l'objet memoise.
+  useEffect(() => {
+    const { core, opacity } = SCENE_PALETTE[theme]
+    setColorUniform(matRef.current, 'uColor', core.flow)
+    setUniform(matRef.current, 'uOpacity', opacity.flow * intensity)
+  }, [theme, intensity])
 
   useFrame((state) => {
     const mat = matRef.current
@@ -99,7 +109,7 @@ export function FlowParticles({ count, radius = 4.2, intensity = 1 }: FlowPartic
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        blending={AdditiveBlending}
+        blending={SCENE_PALETTE[theme].additive ? AdditiveBlending : NormalBlending}
       />
     </points>
   )

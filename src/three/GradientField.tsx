@@ -1,14 +1,11 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
-import { Color, type ShaderMaterial } from 'three'
+import { useEffect, useMemo, useRef } from 'react'
+import type { ShaderMaterial } from 'three'
 import { pointerSignal } from '@/lib/signals'
+import { useAppStore } from '@/store/useAppStore'
+import { SCENE_PALETTE } from './palette'
 import { gradientFieldFragmentShader, gradientFieldVertexShader } from './shaders/gradientField'
-
-/** Palette (miroir des tokens CSS). */
-const ABYSS = new Color('#05070a')
-const DEEP = new Color('#0b1220')
-const ACCENT = new Color('#00e5ff')
-const IRIS = new Color('#7c5cfc')
+import { setColorUniform, setUniform } from './uniforms'
 
 interface GradientFieldProps {
   /** Attenue le fond sur mobile, ou il occupe proportionnellement plus d'ecran. */
@@ -24,25 +21,47 @@ interface GradientFieldProps {
  *
  * `depthTest` et `depthWrite` sont desactives et `renderOrder` est negatif :
  * le quad est dessine en premier et n'interfere jamais avec le noyau reseau
- * qui passe par-dessus en melange additif.
+ * qui passe par-dessus (en melange additif, ou normal en theme clair).
  */
 export function GradientField({ intensity = 1 }: GradientFieldProps) {
   const matRef = useRef<ShaderMaterial>(null)
   const { size } = useThree()
+  const theme = useAppStore((s) => s.theme)
 
-  const uniforms = useMemo(
-    () => ({
+  // ATTENUATION MOBILE : `intensity` multiplie la couleur finale, ce qui revient
+  // a l'assombrir. Sur fond sombre c'est l'effet voulu ; sur fond clair cela
+  // virerait la page au gris, donc le facteur y est neutralise.
+  const fieldIntensity = theme === 'light' ? 1 : intensity
+
+  const uniforms = useMemo(() => {
+    // Lecture NON REACTIVE du store : seule la palette du montage sert a
+    // l'initialisation, pour que la page soit peinte juste des la premiere
+    // frame. Le suivi du theme est la responsabilite de l'effet ci-dessous,
+    // qui ecrit dans le materiau — l'objet memoise, lui, n'est jamais mute.
+    const { field } = SCENE_PALETTE[useAppStore.getState().theme]
+    return {
       uTime: { value: 0 },
       uPointer: { value: [0, 0] as [number, number] },
       uAspect: { value: 1 },
-      uIntensity: { value: intensity },
-      uAbyss: { value: ABYSS },
-      uDeep: { value: DEEP },
-      uAccent: { value: ACCENT },
-      uIris: { value: IRIS },
-    }),
-    [intensity],
-  )
+      uIntensity: { value: fieldIntensity },
+      uFloor: { value: field.floor },
+      uAbyss: { value: field.base.clone() },
+      uDeep: { value: field.veil.clone() },
+      uAccent: { value: field.accent.clone() },
+      uIris: { value: field.iris.clone() },
+    }
+  }, [fieldIntensity])
+
+  useEffect(() => {
+    const mat = matRef.current
+    const { field } = SCENE_PALETTE[theme]
+    setColorUniform(mat, 'uAbyss', field.base)
+    setColorUniform(mat, 'uDeep', field.veil)
+    setColorUniform(mat, 'uAccent', field.accent)
+    setColorUniform(mat, 'uIris', field.iris)
+    setUniform(mat, 'uFloor', field.floor)
+    setUniform(mat, 'uIntensity', fieldIntensity)
+  }, [theme, fieldIntensity])
 
   useFrame((state, delta) => {
     const mat = matRef.current

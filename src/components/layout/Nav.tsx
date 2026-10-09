@@ -5,6 +5,7 @@ import { useCv } from '@/hooks/useCv'
 import { cn } from '@/lib/cn'
 import { useAppStore } from '@/store/useAppStore'
 import { LangToggle } from './LangToggle'
+import { ThemeToggle } from './ThemeToggle'
 
 const NAV_SECTIONS = SECTIONS.filter((s) => s.inNav)
 
@@ -105,7 +106,10 @@ export function Nav() {
             </ul>
           </nav>
 
-          <LangToggle className="ml-2" />
+          {/* Bascules : theme puis langue. Meme pastille, meme hauteur — elles
+              forment une paire et non deux controles disparates. */}
+          <ThemeToggle className="ml-2" />
+          <LangToggle />
 
           {/* Bouton menu mobile */}
           <button
@@ -145,7 +149,7 @@ export function Nav() {
                       'block rounded-xl px-4 py-3 text-sm transition-colors',
                       activeSection === section.id
                         ? 'bg-accent/10 text-accent'
-                        : 'text-muted hover:bg-white/5 hover:text-ink',
+                        : 'text-muted hover:bg-ink/5 hover:text-ink',
                     )}
                   >
                     {section.label[lang]}

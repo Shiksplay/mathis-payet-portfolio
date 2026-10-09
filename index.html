@@ -4,8 +4,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Valeurs du theme de base (sombre) ; le store les met a jour au switch. -->
     <meta name="theme-color" content="#05070A" />
     <meta name="color-scheme" content="dark" />
+
+    <!--
+      ANTI-FLASH DE THEME — doit rester AVANT la feuille de styles.
+      Sans ce script, un visiteur ayant choisi le theme clair verrait d'abord
+      la page peinte en sombre (le CSS est charge avant le bundle JS), puis un
+      saut vers le clair. On pose donc l'attribut des maintenant, de maniere
+      synchrone. La cle doit rester accordee a THEME_KEY (src/store/useAppStore.ts).
+    -->
+    <script>
+      try {
+        if (localStorage.getItem('mp.theme') === 'light') {
+          document.documentElement.dataset.theme = 'light'
+          document.querySelector('meta[name="theme-color"]').content = '#eef1f6'
+          document.querySelector('meta[name="color-scheme"]').content = 'light'
+        }
+      } catch (e) {
+        /* localStorage indisponible : on reste sur le theme de base. */
+      }
+    </script>
 
     <title>Mathis Payet — Réseaux & Télécommunications, Cybersécurité</title>
     <meta

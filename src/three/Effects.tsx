@@ -2,6 +2,8 @@ import { Bloom, ChromaticAberration, EffectComposer, Vignette } from '@react-thr
 import { BlendFunction } from 'postprocessing'
 import { useMemo } from 'react'
 import { Vector2 } from 'three'
+import { useAppStore } from '@/store/useAppStore'
+import { SCENE_PALETTE } from './palette'
 
 /**
  * POST-PROCESSING
@@ -25,27 +27,41 @@ import { Vector2 } from 'three'
  *
  *  - VIGNETTE : assombrit les coins et ramene l'attention vers le centre, la
  *    ou vit le contenu.
+ *
+ * THEME CLAIR : le bloom est RETIRE et la vignette tres allegee. Le seuil de
+ * luminance du bloom (0.12) est largement sous la luminance d'un fond clair :
+ * la passe ferait rayonner le fond lui-meme et la page disparaitrait derriere
+ * un halo blanc. Une vignette a 0.72 poserait, elle, des angles gris sales.
  */
 export function Effects() {
   // Vector2 stable : le recreer a chaque render relancerait la passe.
   const chromaticOffset = useMemo(() => new Vector2(0.0006, 0.0004), [])
+  const theme = useAppStore((s) => s.theme)
+  const { bloom } = SCENE_PALETTE[theme]
 
   return (
     <EffectComposer multisampling={2}>
-      <Bloom
-        intensity={0.85}
-        luminanceThreshold={0.12}
-        luminanceSmoothing={0.35}
-        mipmapBlur
-        radius={0.72}
-      />
+      {bloom ? (
+        <Bloom
+          intensity={0.85}
+          luminanceThreshold={0.12}
+          luminanceSmoothing={0.35}
+          mipmapBlur
+          radius={0.72}
+        />
+      ) : null}
       <ChromaticAberration
         offset={chromaticOffset}
         radialModulation
         modulationOffset={0.45}
         blendFunction={BlendFunction.NORMAL}
       />
-      <Vignette offset={0.3} darkness={0.72} eskil={false} blendFunction={BlendFunction.NORMAL} />
+      <Vignette
+        offset={0.3}
+        darkness={bloom ? 0.72 : 0.12}
+        eskil={false}
+        blendFunction={BlendFunction.NORMAL}
+      />
     </EffectComposer>
   )
 }

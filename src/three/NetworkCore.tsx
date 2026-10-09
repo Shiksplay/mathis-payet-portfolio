@@ -1,26 +1,13 @@
 import { useFrame } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
-import { AdditiveBlending, Color, type Group, type ShaderMaterial } from 'three'
+import { useEffect, useMemo, useRef } from 'react'
+import { AdditiveBlending, type Group, NormalBlending, type ShaderMaterial } from 'three'
+import { useAppStore } from '@/store/useAppStore'
 import { DataPackets } from './DataPackets'
 import { createNetworkGraph } from './networkGraph'
+import { SCENE_PALETTE } from './palette'
 import { edgesFragmentShader, edgesVertexShader } from './shaders/edges'
 import { nodesFragmentShader, nodesVertexShader } from './shaders/nodes'
-
-/** Couleurs de la palette (miroir des tokens --color-accent / --color-iris). */
-const ACCENT = new Color('#00e5ff')
-const IRIS = new Color('#7c5cfc')
-
-/**
- * Ecrit une valeur scalaire dans un uniform du materiau.
- *
- * `ShaderMaterial.uniforms` est indexe par chaine, donc typé comme
- * potentiellement absent sous `noUncheckedIndexedAccess` : la garde evite un
- * plantage si un uniform est renomme dans le shader sans l'etre ici.
- */
-function setUniform(material: ShaderMaterial | null, name: string, value: number): void {
-  const uniform = material?.uniforms[name]
-  if (uniform) uniform.value = value
-}
+import { setColorUniform, setUniform } from './uniforms'
 
 interface NetworkCoreProps {
   /** Densite du noyau. 420 en tier 'high', 140 en tier 'low'. */
@@ -47,42 +34,63 @@ interface NetworkCoreProps {
  * qui donne l'accumulation lumineuse voulue la ou les elements se superposent.
  * Le revers est qu'il n'y a plus d'occlusion entre noeuds — sans importance
  * ici, puisqu'on cherche justement un rendu de "lumiere" et non de solide.
+ *
+ * En theme clair, l'additif est remplace par un melange normal et des couleurs
+ * sombres : sur un fond proche du blanc, ajouter de la lumiere ne produit plus
+ * rien de visible (voir `palette.ts`).
  */
 export function NetworkCore({ nodeCount, packetCount, intensity = 1 }: NetworkCoreProps) {
   const groupRef = useRef<Group>(null)
   const nodeMatRef = useRef<ShaderMaterial>(null)
   const edgeMatRef = useRef<ShaderMaterial>(null)
+  const theme = useAppStore((s) => s.theme)
+  const blending = SCENE_PALETTE[theme].additive ? AdditiveBlending : NormalBlending
 
   // Le graphe est genere une seule fois par valeur de nodeCount.
   const graph = useMemo(() => createNetworkGraph({ nodeCount }), [nodeCount])
 
-  // Les uniforms sont crees une fois puis mutes en place dans useFrame.
-  // Recreer cet objet a chaque render forcerait three a recompiler le shader.
-  const nodeUniforms = useMemo(
-    () => ({
+  // Les uniforms sont crees une fois puis mutes en place a travers le materiau
+  // (useFrame pour le temps, l'effet ci-dessous pour la palette). Recreer cet
+  // objet a chaque render forcerait three a recompiler le shader.
+  const nodeUniforms = useMemo(() => {
+    // Lecture NON REACTIVE du store : seule la valeur au montage sert a
+    // initialiser les uniforms. Le suivi du theme est la responsabilite de
+    // l'effet ci-dessous, qui ecrit dans les materiaux.
+    const { core, opacity } = SCENE_PALETTE[useAppStore.getState().theme]
+    return {
       uTime: { value: 0 },
       uSize: { value: 95 },
       uMaxSize: { value: 26 },
       uPixelRatio: { value: 1 },
-      uColorA: { value: ACCENT },
-      uColorB: { value: IRIS },
-      uOpacity: { value: 0.95 * intensity },
-    }),
-    [intensity],
-  )
+      uColorA: { value: core.accent.clone() },
+      uColorB: { value: core.iris.clone() },
+      uOpacity: { value: opacity.node * intensity },
+    }
+  }, [intensity])
 
-  const edgeUniforms = useMemo(
-    () => ({
+  const edgeUniforms = useMemo(() => {
+    const { core, opacity } = SCENE_PALETTE[useAppStore.getState().theme]
+    return {
       uTime: { value: 0 },
-      uColorA: { value: ACCENT },
-      uColorB: { value: IRIS },
-      uOpacity: { value: 0.16 * intensity },
+      uColorA: { value: core.accent.clone() },
+      uColorB: { value: core.iris.clone() },
+      uOpacity: { value: opacity.edge * intensity },
       // Bornes de l'estompage en profondeur, en unites monde.
       uFadeNear: { value: 2.0 },
       uFadeFar: { value: 9.5 },
-    }),
-    [intensity],
-  )
+    }
+  }, [intensity])
+
+  // Bascule de theme : la palette part aux deux materiaux.
+  useEffect(() => {
+    const { core, opacity } = SCENE_PALETTE[theme]
+    for (const mat of [nodeMatRef.current, edgeMatRef.current]) {
+      setColorUniform(mat, 'uColorA', core.accent)
+      setColorUniform(mat, 'uColorB', core.iris)
+    }
+    setUniform(nodeMatRef.current, 'uOpacity', opacity.node * intensity)
+    setUniform(edgeMatRef.current, 'uOpacity', opacity.edge * intensity)
+  }, [theme, intensity])
 
   useFrame((state, delta) => {
     const t = state.clock.elapsedTime
@@ -124,7 +132,7 @@ export function NetworkCore({ nodeCount, packetCount, intensity = 1 }: NetworkCo
           uniforms={nodeUniforms}
           transparent
           depthWrite={false}
-          blending={AdditiveBlending}
+          blending={blending}
         />
       </points>
 
@@ -141,7 +149,7 @@ export function NetworkCore({ nodeCount, packetCount, intensity = 1 }: NetworkCo
           uniforms={edgeUniforms}
           transparent
           depthWrite={false}
-          blending={AdditiveBlending}
+          blending={blending}
         />
       </lineSegments>
 

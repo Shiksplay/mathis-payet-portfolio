@@ -1,11 +1,11 @@
 import { useFrame } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
-import { AdditiveBlending, Color, type ShaderMaterial } from 'three'
+import { useEffect, useMemo, useRef } from 'react'
+import { AdditiveBlending, NormalBlending, type ShaderMaterial } from 'three'
+import { useAppStore } from '@/store/useAppStore'
 import { createPackets, type NetworkGraph } from './networkGraph'
+import { SCENE_PALETTE } from './palette'
 import { packetsFragmentShader, packetsVertexShader } from './shaders/packets'
-
-const CORE = new Color('#eafcff') // coeur presque blanc
-const EDGE = new Color('#00e5ff') // halo cyan
+import { setColorUniform, setUniform } from './uniforms'
 
 interface DataPacketsProps {
   graph: NetworkGraph
@@ -22,21 +22,32 @@ interface DataPacketsProps {
  */
 export function DataPackets({ graph, count, intensity = 1 }: DataPacketsProps) {
   const matRef = useRef<ShaderMaterial>(null)
+  const theme = useAppStore((s) => s.theme)
+  const palette = SCENE_PALETTE[theme]
 
   const packets = useMemo(() => createPackets(graph, count), [graph, count])
 
-  const uniforms = useMemo(
-    () => ({
+  const uniforms = useMemo(() => {
+    // Lecture NON REACTIVE du store : voir GradientField.
+    const { core, opacity } = SCENE_PALETTE[useAppStore.getState().theme]
+    return {
       uTime: { value: 0 },
       uSize: { value: 150 },
       uMaxSize: { value: 30 },
       uPixelRatio: { value: 1 },
-      uColorCore: { value: CORE },
-      uColorEdge: { value: EDGE },
-      uOpacity: { value: intensity },
-    }),
-    [intensity],
-  )
+      uColorCore: { value: core.packetCore.clone() },
+      uColorEdge: { value: core.packetEdge.clone() },
+      uOpacity: { value: opacity.packet * intensity },
+    }
+  }, [intensity])
+
+  // Bascule de theme : ecriture dans le materiau, pas dans l'objet memoise.
+  useEffect(() => {
+    const { core, opacity } = SCENE_PALETTE[theme]
+    setColorUniform(matRef.current, 'uColorCore', core.packetCore)
+    setColorUniform(matRef.current, 'uColorEdge', core.packetEdge)
+    setUniform(matRef.current, 'uOpacity', opacity.packet * intensity)
+  }, [theme, intensity])
 
   useFrame((state) => {
     const mat = matRef.current
@@ -63,7 +74,7 @@ export function DataPackets({ graph, count, intensity = 1 }: DataPacketsProps) {
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        blending={AdditiveBlending}
+        blending={palette.additive ? AdditiveBlending : NormalBlending}
       />
     </points>
   )

@@ -10,6 +10,9 @@ export interface UiStrings {
   nav: {
     langLabel: string
     switchTo: string
+    themeLabel: string
+    themeDark: string
+    themeLight: string
     menu: string
     closeMenu: string
   }
@@ -61,6 +64,9 @@ export const ui: Record<Lang, UiStrings> = {
     nav: {
       langLabel: 'Langue',
       switchTo: 'Passer en anglais',
+      themeLabel: 'Thème',
+      themeDark: 'Thème sombre',
+      themeLight: 'Thème clair',
       menu: 'Ouvrir le menu',
       closeMenu: 'Fermer le menu',
     },
@@ -116,6 +122,9 @@ export const ui: Record<Lang, UiStrings> = {
     nav: {
       langLabel: 'Language',
       switchTo: 'Switch to French',
+      themeLabel: 'Theme',
+      themeDark: 'Dark theme',
+      themeLight: 'Light theme',
       menu: 'Open menu',
       closeMenu: 'Close menu',
     },

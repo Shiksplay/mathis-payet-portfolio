@@ -48,6 +48,7 @@ export const gradientFieldFragmentShader = /* glsl */ `
   uniform vec2  uPointer;    // souris normalisee [-1, 1]
   uniform float uAspect;
   uniform float uIntensity;
+  uniform float uFloor;      // luminosite des coins (vignettage)
   uniform vec3  uAbyss;
   uniform vec3  uDeep;
   uniform vec3  uAccent;
@@ -112,8 +113,11 @@ export const gradientFieldFragmentShader = /* glsl */ `
     color = mix(color, uAccent, smoothstep(0.78, 1.0, field) * 0.18);
 
     // Vignettage radial : concentre la lumiere au centre, ou vit le contenu.
+    // uFloor est la luminosite conservee dans les coins. Sur fond sombre on
+    // descend bas (0.55) ; sur fond clair, assombrir les angles poserait du
+    // gris sale autour de la page, donc le plancher remonte pres de 1.
     float vignette = 1.0 - smoothstep(0.35, 1.15, length(vUv - 0.5) * 1.9);
 
-    gl_FragColor = vec4(color * mix(0.55, 1.0, vignette) * uIntensity, 1.0);
+    gl_FragColor = vec4(color * mix(uFloor, 1.0, vignette) * uIntensity, 1.0);
   }
 `

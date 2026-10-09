@@ -381,3 +381,80 @@
     white-space: nowrap;
   }
 }
+
+/* ==========================================================================
+   THEME CLAIR
+   ==========================================================================
+   Declenche par `data-theme="light"` sur <html> (pose par le store, et par le
+   script inline de index.html avant le premier rendu pour eviter tout flash).
+
+   PRINCIPE : on ne duplique AUCUNE regle de mise en page. Tous les composants
+   du site peignent avec les tokens `--color-*`, donc redefinir ces sept
+   variables suffit a basculer la page entiere — y compris le voile de la nav,
+   les degrades du hero, la grille technique et les barres de defilement.
+
+   Ce bloc est volontairement HORS `@layer` : les couches natives de Tailwind
+   passent avant le CSS sans couche, ce qui garantit que ces redefinitions
+   l'emportent sur les regles de `@layer components` sans surenchere de
+   specificite.
+   ========================================================================== */
+:root[data-theme='light'] {
+  /* Fond legerement bleute plutot que blanc pur : les panneaux blancs se
+     detachent, et une page de texte long reste confortable a lire. */
+  --color-abyss: #eef1f6;
+  --color-deep: #ffffff;
+  /* Encre quasi noire — le pendant exact de --color-ink du theme sombre. */
+  --color-ink: #0b0f14;
+  --color-muted: #4b5563; /* 6.7:1 sur le fond : lisible, pas seulement gris */
+  /* Le cyan electrique du theme sombre tombe a 1.5:1 sur fond clair. On garde
+     la meme teinte, assombrie jusqu'au contraste AA (4.8:1). */
+  --color-accent: #0e7490;
+  --color-iris: #6d28d9;
+  --color-hairline: #ccd6e4;
+
+  /* Accorde les widgets natifs (champs, barres de defilement) au theme. */
+  color-scheme: light;
+}
+
+/* Le texte de selection etait blanc sur un fond d'accent sombre ; sur l'accent
+   clair il doit repasser a l'encre. */
+:root[data-theme='light'] ::selection {
+  color: var(--color-ink);
+}
+
+/* VERRE SUR FOND CLAIR
+   Un voile blanc translucide sur une page claire ne se detache plus, et l'ombre
+   portee tres noire du theme sombre salit la composition. On densifie donc la
+   teinte et on allege l'ombre. Le flou et la refraction, eux, sont conserves :
+   ce sont eux qui font l'identite du site. */
+:root[data-theme='light'] .glass-panel {
+  background: color-mix(in oklab, var(--color-deep) 80%, transparent);
+  border-color: color-mix(in oklab, var(--color-ink) 12%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, #fff 70%, transparent),
+    0 18px 45px -30px color-mix(in oklab, #0b1220 45%, transparent);
+}
+
+/* Le reflet speculaire blanc est invisible sur blanc : seule la pointe de
+   violet en diagonale est conservee pour garder une epaisseur de verre. */
+:root[data-theme='light'] .glass-panel::before {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, #fff 50%, transparent) 0%,
+    transparent 38%,
+    transparent 62%,
+    color-mix(in oklab, var(--color-iris) 7%, transparent) 100%
+  );
+}
+
+/* Pastilles de competences : aplat franc, sinon elles se confondent avec la
+   page. */
+:root[data-theme='light'] .skill-node {
+  background: color-mix(in oklab, var(--color-deep) 88%, transparent);
+}
+
+/* Le halo neon sous les liens de nav n'a pas de sens sur fond clair : il y
+   lirait comme une ombre sale. Le trait d'accent suffit. */
+:root[data-theme='light'] .nav-link::after {
+  box-shadow: none;
+}
