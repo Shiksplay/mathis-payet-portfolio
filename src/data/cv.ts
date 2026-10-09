@@ -103,21 +103,93 @@ export const cv: Record<Lang, CvContent> = {
     tagline: 'Étudiant passionné par la programmation et le développement',
     profile:
       "Étudiant entrant en 3e année de BUT Réseaux et Télécommunications, parcours Cybersécurité, à l'IUT de La Réunion. Je recherche une alternance en administration et sécurité des réseaux pour l'année scolaire 2026-2027. Curieux et rigoureux, je souhaite mettre en pratique mes compétences en configuration, sécurisation et gestion d'infrastructures réseau au sein d'une équipe technique.",
+    // ORDRE DE LA GALERIE : reseau et securite d'abord. La page sert une
+    // recherche d'alternance en administration et securite des reseaux — le
+    // premier projet lu doit etre celui qui parle a ce recruteur-la.
     projects: [
       {
         index: '01',
-        title: "Jeu intégré à un site web d'entreprise",
-        desc: "Mini-jeu ludique et professionnel intégré au site web d'une entreprise du bâtiment",
-        tags: ['Jeu vidéo', 'Web', 'Game design'],
+        status: 'completed',
+        period: 'Avril – Juin 2026',
+        title: 'Infrastructure réseau des lycées — Région Réunion',
+        context:
+          "Stage de BUT2 au service E-éducation de la Direction de l'Éducation et de la Vie Lycéenne (DEVL), sur le parc des lycées publics réunionnais.",
+        desc: 'Administration, déploiement et maintenance sur le terrain des réseaux des lycées : commutation, mobilité Wi-Fi, téléphonie sur IP et gestion de parc.',
+        tags: ['Réseau', 'Switching', 'Wi-Fi', 'ToIP', 'GLPI'],
+        skills: [
+          'Commutateurs HPE 2510/2530 & Aruba 6000/6100 (CLI SSH/Console)',
+          'Contrôleurs Aruba Instant On & Ubiquiti UniFi',
+          'VLANs, trunks, SNMP',
+          'Bornes Wi-Fi : adoption contrôleur + installation physique',
+          'Brassage cuivre RJ45 & fibre optique',
+          'GLPI 9 / FusionInventory',
+          'Serveur ToIP Asterisk (PJSIP, Yealink SIP-T33G, Linphone)',
+        ],
+        outcome:
+          "Inventaire GLPI mis à jour sur 43 lycées (IP et modèles), déploiement de bornes Wi-Fi avec couverture de l'internat de Roland Garros, remplacement de switchs défectueux (2530 → Aruba 1830 reconfigurés), et mise en service d'un serveur ToIP de secours au lycée Ambroise Vollard — appels validés entre softphone Linphone et postes physiques.",
+        // Tire du bilan de la soutenance de stage : ce sont ses mots.
+        reflection:
+          "Ce stage a confirmé mon intérêt pour les réseaux : passer de la configuration en ligne de commande au brassage des baies m'a montré concrètement ce que représente l'administration d'un parc à grande échelle.",
       },
       {
+        // REGISTRE VOLONTAIRE : methodologie, competences et recommandations.
+        // Le pas-a-pas d'exploitation du rapport (commandes, payloads, modules,
+        // hashes, identifiants) n'a rien a faire sur une page publique — et ce
+        // n'est pas ce qu'un recruteur securite y cherche. On decrit ce qui a
+        // ete fait et appris, pas de quoi rejouer l'attaque.
         index: '02',
-        title: 'The Forgotten',
-        desc: "Jeu solo d'horreur développé sur Unreal Engine 5 dans une ville abandonnée mystérieuse",
-        tags: ['Jeu vidéo', 'Unreal Engine', 'Horreur'],
+        status: 'completed',
+        period: 'Nov. 2025 – Janv. 2026',
+        title: "Audit technique & test d'intrusion (SAÉ cybersécurité)",
+        context:
+          "SAÉ de découverte du pentesting : audit d'intrusion d'une infrastructure cible en laboratoire isolé, sur des environnements Linux et Windows.",
+        desc: "Test d'intrusion mené de bout en bout, de la reconnaissance réseau jusqu'à la compromission du domaine, suivi d'un rapport d'audit et de recommandations.",
+        tags: ['Pentest', 'Sécurité offensive', 'Nmap', 'Metasploit'],
+        skills: [
+          'Reconnaissance réseau (Nmap)',
+          'Exploitation de vulnérabilités connues (Metasploit)',
+          'Mouvement latéral & pivoting réseau',
+          'Élévation de privilèges',
+          'Récupération et cassage de hashes (John the Ripper)',
+          'Post-exploitation',
+          "Rédaction d'un rapport d'audit",
+        ],
+        outcome:
+          "Compromission de trois machines cibles (un serveur Linux, des postes Windows 7 et 10) jusqu'à l'obtention de privilèges administrateur, mettant en évidence une chaîne de vulnérabilités critiques : services obsolètes, mauvaises configurations et secrets exposés. Rédaction de recommandations de remédiation : désactivation des protocoles obsolètes, application des correctifs, durcissement des configurations et surveillance des journaux.",
+        // RESSENTI — proposition a valider par Mathis, a remplacer par ses mots.
+        reflection:
+          "Adopter le point de vue de l'attaquant a changé ma façon de voir la défense : comprendre par quoi une infrastructure cède m'a donné envie d'aller vers le durcissement et la sécurisation des réseaux plutôt que l'offensif pur.",
       },
       {
         index: '03',
+        status: 'ongoing',
+        period: '2026 – en cours',
+        title: 'Streamer audio Hi-Fi sur Raspberry Pi (HiFiBerry)',
+        context:
+          "Projet personnel : transformer un Raspberry Pi en lecteur audio réseau de qualité audiophile à l'aide d'une carte DAC HiFiBerry.",
+        desc: "Montage matériel et configuration logicielle d'un streamer haute-fidélité : carte DAC I²S HiFiBerry, OS dédié et diffusion audio en réseau.",
+        tags: ['Raspberry Pi', 'Audio', 'Linux', 'DIY'],
+        skills: [
+          'Raspberry Pi',
+          'Linux (HiFiBerryOS / Volumio)',
+          'Carte DAC I²S',
+          'Diffusion réseau (AirPlay / Spotify Connect / DLNA)',
+          'Configuration système',
+          'Montage matériel',
+        ],
+        // RESSENTI — proposition a valider par Mathis, a remplacer par ses mots.
+        outcome:
+          "Prototype fonctionnel qui lit en continu depuis le réseau ; travail en cours sur la qualité de restitution et l'intégration dans un système multi-pièces.",
+        // RESSENTI — proposition a valider par Mathis, a remplacer par ses mots.
+        reflection:
+          "Un projet qui relie mes deux terrains favoris, le réseau et le bricolage matériel : voir un petit Raspberry Pi devenir une vraie source audio est très gratifiant.",
+      },
+      {
+        // Carte COMPACTE, volontairement : cv.ts ne contient rien de plus sur ce
+        // projet que son titre, sa description et ses etiquettes. Inventer un
+        // bilan serait exactement ce que ce fichier interdit. Les champs
+        // optionnels sont faits pour ca — la galerie s'adapte.
+        index: '04',
         title: 'SAÉ 1.02 — Système de mesure Température/Hygrométrie avec Raspberry Pi',
         desc: "Système de supervision de la température et de l'humidité d'une salle serveur",
         tags: ['IoT', 'Raspberry Pi', 'Capteurs'],
@@ -228,21 +300,85 @@ export const cv: Record<Lang, CvContent> = {
     tagline: 'Student passionate about programming and software development',
     profile:
       'Third-year student in the Networks & Telecommunications program (BUT RT), Cybersecurity track, at IUT de La Réunion. Looking for a work-study position in network administration and security for the 2026-2027 academic year. Curious and rigorous, I want to put my configuration, hardening, and network infrastructure management skills into practice within a technical team.',
+    // Meme ordre qu'en FR : reseau et securite d'abord.
     projects: [
       {
         index: '01',
-        title: 'Game embedded in a company website',
-        desc: 'A playful yet professional mini-game embedded in the website of a construction company',
-        tags: ['Game', 'Web', 'Game design'],
+        status: 'completed',
+        period: 'April – June 2026',
+        title: 'School Network Infrastructure — Réunion Regional Council',
+        context:
+          "Second-year internship with the e-education team of the Education & School Life Department (DEVL), across Réunion's public high schools.",
+        desc: 'Hands-on administration, deployment and maintenance of school networks: switching, Wi-Fi mobility, IP telephony and asset management.',
+        tags: ['Networking', 'Switching', 'Wi-Fi', 'VoIP', 'GLPI'],
+        skills: [
+          'HPE 2510/2530 & Aruba 6000/6100 switches (CLI SSH/Console)',
+          'Aruba Instant On & Ubiquiti UniFi controllers',
+          'VLANs, trunks, SNMP',
+          'Wi-Fi access points: controller adoption + physical install',
+          'RJ45 copper & fibre patching',
+          'GLPI 9 / FusionInventory',
+          'Asterisk VoIP server (PJSIP, Yealink SIP-T33G, Linphone)',
+        ],
+        outcome:
+          'GLPI inventory updated across 43 high schools (IPs and models), Wi-Fi access points deployed with full coverage of the Roland Garros boarding school, faulty switches replaced (2530 → reconfigured Aruba 1830), and a backup VoIP server brought online at Ambroise Vollard high school — calls validated between a Linphone softphone and physical handsets.',
+        // Tire du bilan de la soutenance de stage : ce sont ses mots.
+        reflection:
+          'This internship confirmed my interest in networking: going from command-line configuration to physically patching the racks gave me a concrete sense of what administering a large-scale estate really involves.',
       },
       {
+        // Voir la version FR : registre methodologie / recommandations, jamais
+        // le pas-a-pas d'exploitation.
         index: '02',
-        title: 'The Forgotten',
-        desc: 'Single-player horror game built in Unreal Engine 5, set in a mysterious abandoned city',
-        tags: ['Game', 'Unreal Engine', 'Horror'],
+        status: 'completed',
+        period: 'Nov. 2025 – Jan. 2026',
+        title: 'Technical Audit & Penetration Test (cybersecurity project)',
+        context:
+          'Introductory penetration-testing project: an intrusion audit of a target infrastructure in an isolated lab, across Linux and Windows environments.',
+        desc: 'End-to-end penetration test, from network reconnaissance to domain compromise, followed by an audit report and remediation recommendations.',
+        tags: ['Pentest', 'Offensive Security', 'Nmap', 'Metasploit'],
+        skills: [
+          'Network reconnaissance (Nmap)',
+          'Exploitation of known vulnerabilities (Metasploit)',
+          'Lateral movement & network pivoting',
+          'Privilege escalation',
+          'Hash recovery and cracking (John the Ripper)',
+          'Post-exploitation',
+          'Audit reporting',
+        ],
+        outcome:
+          'Compromised three target machines (a Linux server, Windows 7 and 10 workstations) up to administrator privileges, exposing a chain of critical weaknesses: outdated services, misconfigurations and exposed secrets. Produced remediation recommendations: disabling obsolete protocols, applying patches, hardening configurations and monitoring logs.',
+        // RESSENTI — proposition a valider par Mathis, a remplacer par ses mots.
+        reflection:
+          "Taking the attacker's point of view changed how I see defence: understanding exactly where an infrastructure gives way made me want to move toward hardening and securing networks rather than pure offensive work.",
       },
       {
         index: '03',
+        status: 'ongoing',
+        period: '2026 – ongoing',
+        title: 'Hi-Fi audio streamer on Raspberry Pi (HiFiBerry)',
+        context:
+          'Personal project: turning a Raspberry Pi into an audiophile-grade network audio player using a HiFiBerry DAC board.',
+        desc: 'Hardware assembly and software configuration of a hi-fi streamer: HiFiBerry I²S DAC board, dedicated OS and network audio streaming.',
+        tags: ['Raspberry Pi', 'Audio', 'Linux', 'DIY'],
+        skills: [
+          'Raspberry Pi',
+          'Linux (HiFiBerryOS / Volumio)',
+          'I²S DAC board',
+          'Network streaming (AirPlay / Spotify Connect / DLNA)',
+          'System configuration',
+          'Hardware assembly',
+        ],
+        // RESSENTI — proposition a valider par Mathis, a remplacer par ses mots.
+        outcome:
+          'Working prototype that streams continuously over the network; still refining audio quality and integration into a multi-room setup.',
+        // RESSENTI — proposition a valider par Mathis, a remplacer par ses mots.
+        reflection:
+          'A project that ties together my two favourite playgrounds, networking and hands-on hardware: watching a tiny Raspberry Pi turn into a real audio source is very rewarding.',
+      },
+      {
+        // Carte compacte : voir le commentaire de la version FR.
+        index: '04',
         title: 'SAÉ 1.02 — Temperature/Humidity monitoring system with Raspberry Pi',
         desc: 'Monitoring system for the temperature and humidity of a server room',
         tags: ['IoT', 'Raspberry Pi', 'Sensors'],
