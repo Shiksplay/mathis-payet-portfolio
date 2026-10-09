@@ -13,6 +13,12 @@ interface SectionShellProps {
   className?: string
   /** Contenu pleine largeur (galerie horizontale) au lieu de la colonne de lecture. */
   wide?: boolean
+  /**
+   * Pose un aplat pleine largeur derriere TOUTE la section, filets compris.
+   * Sert a detacher une section du reste de la page — la galerie de projets
+   * cesse alors de flotter sur la scene 3D et devient une piece a part.
+   */
+  surface?: boolean
 }
 
 /**
@@ -38,6 +44,7 @@ export function SectionShell({
   children,
   className,
   wide = false,
+  surface = false,
 }: SectionShellProps) {
   const titleId = `${id}-title`
 
@@ -47,6 +54,22 @@ export function SectionShell({
       aria-labelledby={titleId}
       className={cn('relative py-20 sm:py-28 md:py-36', className)}
     >
+      {/* APLAT DE SECTION — la section est deja `relative`, donc une couche en
+          `inset-0` couvre exactement sa boite, padding compris : pleine largeur
+          sans aucune marge negative a maintenir.
+
+          AUCUN `backdrop-filter` ICI, volontairement. Un flou sur une surface
+          de cette taille coute cher a chaque frame de scroll, et la page a deja
+          son budget GPU parti dans la scene 3D. Une teinte opaque et la grille
+          technique suffisent a marquer la rupture, pour zero cout de rendu. */}
+      {surface ? (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 border-y border-hairline bg-deep/45" />
+          <div className="absolute inset-0 grid-blueprint opacity-60" />
+          {/* Halo haut : marque l'entree dans la galerie. */}
+          <div className="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-accent/[0.07] to-transparent" />
+        </div>
+      ) : null}
       {/* ---------- Bandeau de titre, pleine largeur ---------- */}
       <div className="mx-auto max-w-[110rem] px-6 sm:px-10">
         <div className="flex items-center gap-5 border-t border-hairline pt-5">
